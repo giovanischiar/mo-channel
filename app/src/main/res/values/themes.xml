@@ -1,4 +1,9 @@
 <resources>
 
-  <style name="Theme.MoChannel" parent="@style/Theme.Leanback" />
+  <style name="Theme.MoChannel" parent="Theme.AppCompat.Light">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

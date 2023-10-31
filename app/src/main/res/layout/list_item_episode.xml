@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/tvShowName"
+  android:id="@+id/episodeName"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:ellipsize="middle"
+  android:lines="1"
   android:orientation="vertical"
   android:textColor="@color/lb_tv_white"
-  android:textSize="@dimen/lb_browse_title_text_size" />
+  android:textSize="@dimen/lb_basic_card_content_text_size" />

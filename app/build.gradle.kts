@@ -57,4 +57,19 @@ dependencies {
 
     // Gson
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    val navVersion = "2.7.3"
+
+    // Kotlin
+    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+
+    // Feature module Support
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+
+    // Testing Navigation
+    androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
+
+    // Jetpack Compose Integration
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 }

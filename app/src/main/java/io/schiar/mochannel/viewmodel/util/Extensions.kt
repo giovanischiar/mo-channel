@@ -1,4 +1,4 @@
-package io.schiar.mochannel.viewmodel
+package io.schiar.mochannel.viewmodel.util
 
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow

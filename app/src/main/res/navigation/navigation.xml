@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/navigation"
+  app:startDestination="@id/TVShowsFragment">
+
+  <fragment
+    android:id="@+id/TVShowsFragment"
+    android:name="io.schiar.mochannel.view.fragment.TVShowsFragment"
+    android:label="TV Shows"
+    tools:layout="@layout/fragment_tv_shows" >
+    <action
+      android:id="@+id/action_TVShowsFragment_to_TVShowFragment"
+      app:destination="@id/TVShowFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/TVShowFragment"
+    android:name="io.schiar.mochannel.view.fragment.TVShowFragment"
+    android:label="TV Show" >
+    <action
+      android:id="@+id/action_TVShowFragment_to_videoFragment"
+      app:destination="@id/videoFragment" />
+    <action
+      android:id="@+id/action_TVShowFragment_to_TVShowsFragment"
+      app:destination="@id/TVShowsFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/videoFragment"
+    android:name="io.schiar.mochannel.view.fragment.VideoFragment"
+    android:label="Episode" >
+    <action
+      android:id="@+id/action_videoFragment_to_TVShowFragment"
+      app:destination="@id/TVShowFragment" />
+  </fragment>
+</navigation>
