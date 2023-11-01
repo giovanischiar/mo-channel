@@ -12,10 +12,10 @@ class VideoViewModel(
 ) : ViewModel() {
     private var url =
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    private val _source = MutableStateFlow(url)
-    val source: StateFlow<String> = _source
+    private val _source = MutableStateFlow(listOf(url))
+    val source: StateFlow<List<String>> = _source
 
     fun loadEpisode() {
-        _source.update { repository.currentEpisodeURL }
+        _source.update { repository.currentEpisodeURLs }
     }
 }

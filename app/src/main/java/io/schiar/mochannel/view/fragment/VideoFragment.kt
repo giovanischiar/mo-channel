@@ -30,15 +30,15 @@ class VideoFragment : Fragment() {
         viewModel = (requireActivity() as MainActivity).videoViewModel
         viewModel.loadEpisode()
         lifecycleScope.launch {
-            viewModel.source.collect { url ->
+            viewModel.source.collect { urls ->
                 val view = view ?: return@collect
                 val context = context ?: return@collect
-                val videoUri = Uri.parse(url)
                 player = ExoPlayer.Builder(context).build()
+                player.setMediaItems(urls.map {
+                    url -> MediaItem.fromUri(Uri.parse(url))
+                })
                 val playerView = view.findViewById<PlayerView>(R.id.video)
                 playerView.player = player
-                val mediaItem = MediaItem.fromUri(videoUri)
-                player.setMediaItem(mediaItem)
                 player.prepare()
                 player.play()
             }

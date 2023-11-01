@@ -11,7 +11,7 @@ class MainRepository(
 ) : TVShowsRepository, EpisodesRepository, EpisodeRepository {
     private val tvShowEpisodes = mutableMapOf<String, List<Episode>>()
     override var currentTVShow = ""
-    override var currentEpisodeURL = ""
+    override var currentEpisodeURLs = listOf<String>()
 
     override suspend fun loadTVShows(
         onTVShowsLoaded: (tvShows: List<TVShow>) -> Unit
@@ -31,6 +31,10 @@ class MainRepository(
     }
 
     override fun selectEpisode(url: String) {
-        currentEpisodeURL = url
+        val urls = (tvShowEpisodes[currentTVShow] ?: emptyList()).map { it.url }
+        val indexOfCurrentURL = urls.indexOf(url)
+        val lastPart = urls.subList(indexOfCurrentURL + 1, urls.size)
+        val firstPart = urls.subList(0, indexOfCurrentURL)
+        currentEpisodeURLs = listOf(url) + lastPart + firstPart
     }
 }
