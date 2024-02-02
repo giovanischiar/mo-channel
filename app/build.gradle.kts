@@ -40,17 +40,18 @@ dependencies {
     implementation("androidx.leanback:leanback:1.0.0")
 
     // ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.1.1")
-    implementation("androidx.media3:media3-exoplayer-dash:1.1.1")
+    val mediaVersion = "1.2.1"
+    implementation("androidx.media3:media3-exoplayer:$mediaVersion")
+    implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
 
     // Media
-    implementation("androidx.media3:media3-ui:1.1.1")
+    implementation("androidx.media3:media3-ui:$mediaVersion")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -58,7 +59,7 @@ dependencies {
     // Gson
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    val navVersion = "2.7.3"
+    val navVersion = "2.7.6"
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
