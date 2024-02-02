@@ -4,5 +4,5 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
-  android:textColor="@color/lb_tv_white"
+  android:textColor="#FF171611"
   android:textSize="@dimen/lb_browse_title_text_size" />
