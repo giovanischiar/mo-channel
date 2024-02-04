@@ -23,10 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.SubtitleConfiguration
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.google.common.collect.ImmutableList
 import io.schiar.mochannel.viewmodel.VideoViewModel
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
@@ -41,8 +45,21 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
     var backHandlerEnabled by remember { mutableStateOf(value = true) }
     videoViewModel.loadEpisode()
 
+
     LaunchedEffect(urls) {
-        exoPlayer.setMediaItems(urls.map { url -> MediaItem.fromUri(Uri.parse(url)) })
+        exoPlayer.setMediaItems(urls.map {
+            url ->
+                val subtitles = SubtitleConfiguration
+                    .Builder(Uri.parse(url.dropLast(n = 3) + "srt"))
+                    .setMimeType(MimeTypes.APPLICATION_SUBRIP)
+                    .setLanguage("en")
+                    .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    .build()
+                MediaItem.Builder()
+                    .setUri(url)
+                    .setSubtitleConfigurations(ImmutableList.of(subtitles))
+                    .build()
+        })
         exoPlayer.playWhenReady = true
     }
 
