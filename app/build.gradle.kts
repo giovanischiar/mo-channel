@@ -32,6 +32,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.6"
+    }
 }
 
 dependencies {
@@ -73,4 +79,16 @@ dependencies {
 
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // General compose dependencies
+    val composeBom = platform("androidx.compose:compose-bom:2024.01.00")
+    implementation(composeBom)
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // Compose for TV dependencies
+    val tvCompose = "1.0.0-alpha10"
+    implementation("androidx.tv:tv-foundation:$tvCompose")
+    implementation("androidx.tv:tv-material:$tvCompose")
 }
