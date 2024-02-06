@@ -18,7 +18,10 @@ import io.schiar.mochannel.viewmodel.TVShowsViewModel
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TVShowsScreen(tvShowsViewModel: TVShowsViewModel, onTVShowPressed: () -> Unit = {}) {
+fun TVShowsScreen(
+    tvShowsViewModel: TVShowsViewModel,
+    onTVShowPressed: () -> Unit = {}
+) {
     val tvShows by tvShowsViewModel.tvShows.collectAsState()
     Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
         LazyColumn(

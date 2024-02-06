@@ -6,9 +6,9 @@ import io.schiar.mochannel.view.viewdata.EpisodeViewData
 import io.schiar.mochannel.view.viewdata.TVShowViewData
 
 fun Episode.toViewData(): EpisodeViewData {
-    return EpisodeViewData(name = name, url = url)
+    return EpisodeViewData(name = nameWithoutSeason, url = url)
 }
 
 fun TVShow.toViewData(): TVShowViewData {
-    return TVShowViewData(name = name, episodes = episodes.map { it.toViewData() })
+    return TVShowViewData(name = name, seasonTitles = seasonTitles)
 }

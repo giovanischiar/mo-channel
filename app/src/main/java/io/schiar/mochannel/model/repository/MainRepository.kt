@@ -1,5 +1,6 @@
 package io.schiar.mochannel.model.repository
 
+import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.TVShowDataSourceable
 import io.schiar.mochannel.model.datasource.TVShowLocalHostDataSource
@@ -7,11 +8,8 @@ import io.schiar.mochannel.model.datasource.TVShowLocalHostDataSource
 class MainRepository(
     private val tvShowDataSourceable: TVShowDataSourceable = TVShowLocalHostDataSource()
 ) : TVShowsRepository, TVShowRepository, VideoRepository {
-    private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
-    private var currentTVShowCallback: ((TVShow) -> Unit)? = null
-    private var currentTVShowEpisodeUrlsCallback: ((List<String>) -> Unit)? = null
-
     // TVShowsRepository
+    private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
 
     override fun subscribeForTVShows(callback: (tvShows: List<TVShow>) -> Unit) {
         tvShowsCallback = callback
@@ -28,19 +26,38 @@ class MainRepository(
     }
 
     // TVShowRepository
+    private var currentTVShowCallback: ((TVShow) -> Unit)? = null
+    private var currentEpisodesFromSeasonCallback: ((List<Episode>) -> Unit)? = null
 
     override fun subscribeForCurrentTVShow(callback: (tvShow: TVShow) -> Unit) {
         currentTVShowCallback = callback
     }
 
-    override suspend fun selectEpisodeAt(index: Int) {
+    override fun subscribeForCurrentEpisodesFromSeason(
+        callback: (episodes: List<Episode>) -> Unit
+    ) {
+        currentEpisodesFromSeasonCallback = callback
+    }
+
+    override suspend fun selectEpisodesFromSeasonAt(index: Int) {
+        val currentTVShow = tvShowDataSourceable.retrieveCurrentTVShow() ?: return
+        currentEpisodesFromSeasonCallback?.let {
+            it(currentTVShow.episodesFromSeasonAt(index = index))
+        }
+    }
+
+    override suspend fun urlsOfEpisodesFromIndexOfSeasonAt(index: Int, episodeIndex: Int) {
         val currentTVShow = tvShowDataSourceable.retrieveCurrentTVShow() ?: return
         currentTVShowEpisodeUrlsCallback?.let {
-            it(currentTVShow.episodesFrom(index = index).map { it.url })
+            val urls = currentTVShow.urlsOfEpisodesFromIndexOfSeasonAt(
+                index = index, episodeIndex = episodeIndex
+            )
+            it(urls)
         }
     }
 
     // VideoRepository
+    private var currentTVShowEpisodeUrlsCallback: ((List<String>) -> Unit)? = null
     
     override fun subscribeForCurrentTVShowUrls(callback: (urls: List<String>) -> Unit) {
         currentTVShowEpisodeUrlsCallback = callback
