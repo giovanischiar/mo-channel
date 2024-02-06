@@ -1,6 +1,7 @@
 package io.schiar.mochannel.view.screen
 
 import android.net.Uri
+import android.view.KeyEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
@@ -27,6 +28,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.SubtitleConfiguration
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -41,10 +43,9 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val coroutineScope = rememberCoroutineScope()
     val exoPlayer = remember { ExoPlayer.Builder(context).build().apply { prepare() } }
-    val urls by videoViewModel.source.collectAsState()
-    var backHandlerEnabled by remember { mutableStateOf(value = true) }
-    videoViewModel.loadEpisode()
 
+    val urls by videoViewModel.urls.collectAsState()
+    var backHandlerEnabled by remember { mutableStateOf(value = true) }
 
     LaunchedEffect(urls) {
         exoPlayer.setMediaItems(urls.map {
@@ -90,7 +91,25 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
         AndroidView(
             modifier = Modifier
                 .focusable()
-                .onKeyEvent { playerView.dispatchKeyEvent(it.nativeKeyEvent) },
+                .onKeyEvent {
+                    print(Log.d("a", "Key Pressed, $it"))
+                    when (it.nativeKeyEvent.keyCode) {
+                        KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                            playerView.player?.seekForward(); return@onKeyEvent true
+                        }
+                        KeyEvent.KEYCODE_DPAD_LEFT -> {
+                            playerView.player?.seekBack(); return@onKeyEvent true
+                        }
+                        KeyEvent.KEYCODE_MEDIA_PLAY -> {
+                            playerView.player?.play(); return@onKeyEvent true
+                        }
+                        KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                            playerView.player?.pause(); return@onKeyEvent true
+                        }
+                    }
+
+                    playerView.dispatchKeyEvent(it.nativeKeyEvent)
+                },
             factory = { playerView }
         )
 

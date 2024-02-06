@@ -1,40 +1,48 @@
 package io.schiar.mochannel.model.repository
 
-import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.repository.tvshow.TVShowAPIRepository
-import io.schiar.mochannel.model.repository.tvshow.TVShowRepository
-import kotlinx.coroutines.coroutineScope
+import io.schiar.mochannel.model.datasource.TVShowDataSourceable
+import io.schiar.mochannel.model.datasource.TVShowLocalHostDataSource
 
 class MainRepository(
-    private val tvShowRepository: TVShowRepository = TVShowAPIRepository()
-) : TVShowsRepository, EpisodesRepository, EpisodeRepository {
-    private val tvShowEpisodes = mutableMapOf<String, List<Episode>>()
-    override var currentTVShow = ""
-    override var currentEpisodeURLs = listOf<String>()
+    private val tvShowDataSourceable: TVShowDataSourceable = TVShowLocalHostDataSource()
+) : TVShowsRepository, TVShowRepository, VideoRepository {
+    private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
+    private var currentTVShowCallback: ((TVShow) -> Unit)? = null
+    private var currentTVShowEpisodeUrlsCallback: ((List<String>) -> Unit)? = null
 
-    override suspend fun loadTVShows(
-        onTVShowsLoaded: (tvShows: List<TVShow>) -> Unit
-    ) = coroutineScope {
-        tvShowRepository.loadTVShows { tvShows ->
-            tvShows.forEach { tvShow -> tvShowEpisodes[tvShow.name] = tvShow.episodes }
-            onTVShowsLoaded(tvShows)
+    // TVShowsRepository
+
+    override fun subscribeForTVShows(callback: (tvShows: List<TVShow>) -> Unit) {
+        tvShowsCallback = callback
+    }
+
+    override suspend fun loadTVShows() {
+        val tvShows = tvShowDataSourceable.retrieveTVShows()
+        tvShowsCallback?.let { it(tvShows) }
+    }
+
+    override suspend fun selectTVShowAt(index: Int) {
+        val tvShow = tvShowDataSourceable.retrieveTVShowAt(index = index) ?: return
+        currentTVShowCallback?.let { it(tvShow) }
+    }
+
+    // TVShowRepository
+
+    override fun subscribeForCurrentTVShow(callback: (tvShow: TVShow) -> Unit) {
+        currentTVShowCallback = callback
+    }
+
+    override suspend fun selectEpisodeAt(index: Int) {
+        val currentTVShow = tvShowDataSourceable.retrieveCurrentTVShow() ?: return
+        currentTVShowEpisodeUrlsCallback?.let {
+            it(currentTVShow.episodesFrom(index = index).map { it.url })
         }
     }
 
-    override fun selectTVShow(name: String) {
-        currentTVShow = name
-    }
-
-    override fun loadEpisodes(): List<Episode> {
-        return tvShowEpisodes[currentTVShow] ?: emptyList()
-    }
-
-    override fun selectEpisode(url: String) {
-        val urls = (tvShowEpisodes[currentTVShow] ?: emptyList()).map { it.url }
-        val indexOfCurrentURL = urls.indexOf(url)
-        val lastPart = urls.subList(indexOfCurrentURL + 1, urls.size)
-        val firstPart = urls.subList(0, indexOfCurrentURL)
-        currentEpisodeURLs = listOf(url) + lastPart + firstPart
+    // VideoRepository
+    
+    override fun subscribeForCurrentTVShowUrls(callback: (urls: List<String>) -> Unit) {
+        currentTVShowEpisodeUrlsCallback = callback
     }
 }

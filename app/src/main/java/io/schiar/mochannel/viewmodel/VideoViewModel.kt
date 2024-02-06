@@ -1,21 +1,23 @@
 package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
-import io.schiar.mochannel.model.repository.EpisodeRepository
+import androidx.lifecycle.viewModelScope
 import io.schiar.mochannel.model.repository.MainRepository
+import io.schiar.mochannel.model.repository.VideoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class VideoViewModel(
-    private val repository: EpisodeRepository = MainRepository()
+    repository: VideoRepository = MainRepository()
 ) : ViewModel() {
-    private var url =
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    private val _source = MutableStateFlow(listOf(url))
-    val source: StateFlow<List<String>> = _source
+    private val _urls = MutableStateFlow(emptyList<String>())
+    val urls: StateFlow<List<String>> = _urls
 
-    fun loadEpisode() {
-        _source.update { repository.currentEpisodeURLs }
+    private fun onUrlsChanged(urls: List<String>) {
+        _urls.update { urls }
     }
+
+    init { repository.subscribeForCurrentTVShowUrls(::onUrlsChanged) }
 }

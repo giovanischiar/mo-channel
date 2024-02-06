@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
+import io.schiar.mochannel.model.datasource.TVShowLocalHostDataSource
 import io.schiar.mochannel.model.repository.MainRepository
 import io.schiar.mochannel.view.screen.AppScreen
 import io.schiar.mochannel.viewmodel.TVShowViewModel
@@ -14,7 +15,9 @@ import io.schiar.mochannel.viewmodel.util.ViewModelFactory
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModelFactory = ViewModelFactory(repository = MainRepository())
+        val tvShowLocalHostDataSource = TVShowLocalHostDataSource()
+        val mainRepository = MainRepository(tvShowDataSourceable = tvShowLocalHostDataSource)
+        val viewModelFactory = ViewModelFactory(repository = mainRepository)
         val viewModelProvider = ViewModelProvider(owner = this, factory = viewModelFactory)
         setContent {
             AppScreen(

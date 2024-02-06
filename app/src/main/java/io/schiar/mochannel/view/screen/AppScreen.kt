@@ -20,12 +20,12 @@ fun AppScreen(
         composable(route = "TVShows") {
             TVShowsScreen(
                 tvShowsViewModel = tvShowsViewModel,
-                onPressTVShow = { navController.navigate(route = "TVShow") })
+                onTVShowPressed = { navController.navigate(route = "TVShow") })
         }
         composable(route = "TVShow") {
             TVShowScreen(
                 tvShowViewModel = tvShowViewModel,
-                onPressVideo = { navController.navigate(route = "Video") }
+                onVideoPressed = { navController.navigate(route = "Video") }
             )
         }
         composable(route = "Video") { VideoScreen(videoViewModel = videoViewModel) }

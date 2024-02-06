@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,9 +18,8 @@ import io.schiar.mochannel.viewmodel.TVShowsViewModel
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TVShowsScreen(tvShowsViewModel: TVShowsViewModel, onPressTVShow: () -> Unit = {}) {
+fun TVShowsScreen(tvShowsViewModel: TVShowsViewModel, onTVShowPressed: () -> Unit = {}) {
     val tvShows by tvShowsViewModel.tvShows.collectAsState()
-    LaunchedEffect(Unit) { tvShowsViewModel.loadTVShows() }
     Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -33,8 +31,8 @@ fun TVShowsScreen(tvShowsViewModel: TVShowsViewModel, onPressTVShow: () -> Unit 
                     .fillMaxWidth()
                     .padding(horizontal = 50.dp, vertical = 5.dp),
                     onClick={
-                        tvShowsViewModel.selectTVShow(name = tvShow.name)
-                        onPressTVShow()
+                        tvShowsViewModel.selectTVShowAt(index = index)
+                        onTVShowPressed()
                     }
                 ) {
                     Text(tvShow.name)
