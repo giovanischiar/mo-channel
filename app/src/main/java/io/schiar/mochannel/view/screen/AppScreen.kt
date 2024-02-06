@@ -1,10 +1,14 @@
 package io.schiar.mochannel.view.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.schiar.mochannel.R
 import io.schiar.mochannel.viewmodel.TVShowViewModel
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
 import io.schiar.mochannel.viewmodel.VideoViewModel
@@ -16,7 +20,11 @@ fun AppScreen(
     videoViewModel: VideoViewModel,
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController = navController, startDestination = "TVShows") {
+    NavHost(
+        modifier = Modifier.background(color = colorResource(R.color.backgroundColor)),
+        navController = navController,
+        startDestination = "TVShows"
+    ) {
         composable(route = "TVShows") {
             TVShowsScreen(
                 tvShowsViewModel = tvShowsViewModel,

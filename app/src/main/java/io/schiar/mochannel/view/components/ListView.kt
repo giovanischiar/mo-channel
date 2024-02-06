@@ -7,10 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonColors
+import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
+import io.schiar.mochannel.R
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -30,9 +34,14 @@ fun ListView(
                 .fillMaxWidth()
                 .padding(horizontal = 50.dp, vertical = 5.dp)
                 .onFocusEvent {
-                    if (it.hasFocus) { onButtonFocusedAt(index) }
+                    if (it.hasFocus) {
+                        onButtonFocusedAt(index)
+                    }
                 },
-                onClick= { onButtonPressedAt(index) }
+                onClick= { onButtonPressedAt(index) },
+                colors = ButtonDefaults.colors(
+                    focusedContainerColor = colorResource(id = R.color.mColor)
+                )
             ) {
                 Text(buttonTitle)
             }

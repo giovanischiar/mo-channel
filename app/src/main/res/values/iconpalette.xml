@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="backgroundColor">#1c4587</color>
+  <color name="backgroundBuildingsColor">#171611</color>
+  <color name="mainBuildingsColor">#3d3321</color>
+  <color name="mColor">#13c4a3</color>
+  <color name="moonColor">#fdfcff</color>
+  <color name="salesforceTowerTopColor">#13c4a3</color>
+</resources>
