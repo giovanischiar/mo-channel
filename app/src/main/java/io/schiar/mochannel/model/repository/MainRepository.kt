@@ -3,10 +3,10 @@ package io.schiar.mochannel.model.repository
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.TVShowDataSourceable
-import io.schiar.mochannel.model.datasource.TVShowLocalHostDataSource
+import io.schiar.mochannel.model.datasource.TVShowDataSource
 
 class MainRepository(
-    private val tvShowDataSourceable: TVShowDataSourceable = TVShowLocalHostDataSource()
+    private val tvShowDataSourceable: TVShowDataSourceable = TVShowDataSource()
 ) : TVShowsRepository, TVShowRepository, VideoRepository {
     // TVShowsRepository
     private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null

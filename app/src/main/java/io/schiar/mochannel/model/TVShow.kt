@@ -1,22 +1,20 @@
 package io.schiar.mochannel.model
 
 data class TVShow(val name: String, val episodes: List<Episode>) {
-    private val seasons: List<Season> get() {
-        return if (episodes.isEmpty()) {
-            listOf(Season(title = "", episodes = episodes))
-        } else if (!episodes[0].name.contains(char = '/')) {
-            listOf(Season(title = "", episodes = episodes))
-        } else {
-            val seasonTitles = episodes.map { it.name.split('/')[0] }.toSortedSet()
-            seasonTitles.map { seasonTitle ->
-                Season(
-                    title = seasonTitle,
-                    episodes = episodes.filter {
-                        val episodeSeasonName = it.name.split("/")[0]
-                        episodeSeasonName == seasonTitle
-                    }
-                )
-            }
+    private val seasons = if (episodes.isEmpty()) {
+        listOf(Season(title = "", episodes = episodes))
+    } else if (!episodes[0].name.contains(char = '/')) {
+        listOf(Season(title = "", episodes = episodes))
+    } else {
+        val seasonTitles = episodes.map { it.name.split('/')[0] }.toSortedSet()
+        seasonTitles.map { seasonTitle ->
+            Season(
+                title = seasonTitle,
+                episodes = episodes.filter {
+                    val episodeSeasonName = it.name.split("/")[0]
+                    episodeSeasonName == seasonTitle
+                }
+            )
         }
     }
 
