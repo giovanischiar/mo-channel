@@ -1,13 +1,17 @@
 package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.Episode
+import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.TVShow
+import io.schiar.mochannel.model.datasource.settings.SettingsDataSource
+import io.schiar.mochannel.model.datasource.settings.SettingsDataSourceable
 import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSource
 import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSourceable
 
 class MainRepository(
-    private val tvShowDataSourceable: TVShowDataSourceable = TVShowDataSource()
-) : TVShowsRepository, TVShowRepository, VideoRepository {
+    private val tvShowDataSourceable: TVShowDataSourceable = TVShowDataSource(),
+    private val settingsDataSourceable: SettingsDataSourceable = SettingsDataSource()
+) : SettingsRepository, TVShowsRepository, TVShowRepository, VideoRepository {
     // TVShowsRepository
     private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
 
@@ -61,5 +65,41 @@ class MainRepository(
     
     override fun subscribeForCurrentTVShowUrls(callback: (urls: List<String>) -> Unit) {
         currentTVShowEpisodeUrlsCallback = callback
+    }
+
+    // SettingsRepository
+    private var serverURLsCallbacks: MutableList<((ServerURL) -> Unit)> = mutableListOf()
+
+    private suspend fun serverURLRetrievedFromDataSource(): ServerURL {
+        return settingsDataSourceable.retrieveServerURL()
+    }
+
+    private suspend fun updateServerURLTo(newServerURL: ServerURL) {
+        settingsDataSourceable.updateServerURLTo(newServerURL = newServerURL)
+        serverURLsCallbacks.invokeAll(serverURL = newServerURL)
+    }
+
+    override fun subscribeForServerURLs(callback: ((ServerURL) -> Unit)) {
+        serverURLsCallbacks.add(callback)
+    }
+
+    override suspend fun updatePrefixTo(newPrefix: String) {
+        val serverURL = serverURLRetrievedFromDataSource()
+        updateServerURLTo(newServerURL = serverURL.prefixUpdatedTo(newPrefix = newPrefix))
+    }
+
+    override suspend fun updateURLTo(newURL: String) {
+        val serverURL = serverURLRetrievedFromDataSource()
+        updateServerURLTo(newServerURL = serverURL.urlUpdatedTo(newURL = newURL))
+    }
+
+    override suspend fun updatePortTo(newPort: String) {
+        val serverURL = serverURLRetrievedFromDataSource()
+        updateServerURLTo(newServerURL = serverURL.portUpdatedTo(newPort = newPort))
+    }
+
+    override suspend fun loadServerURL() {
+        val serverURL = settingsDataSourceable.retrieveServerURL()
+        serverURLsCallbacks.invokeAll(serverURL = serverURL)
     }
 }

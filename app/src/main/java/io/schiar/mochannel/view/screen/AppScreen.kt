@@ -22,7 +22,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import io.schiar.mochannel.R
-import io.schiar.mochannel.viewmodel.AppViewModel
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
@@ -31,18 +30,23 @@ import io.schiar.mochannel.viewmodel.VideoViewModel
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun AppScreen(
-    appViewModel: AppViewModel,
     settingsViewModel: SettingsViewModel,
     tvShowsViewModel: TVShowsViewModel,
     tvShowViewModel: TVShowViewModel,
     videoViewModel: VideoViewModel,
     navController: NavHostController = rememberNavController()
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val serverURL by settingsViewModel.serverURL.collectAsState()
+    LaunchedEffect(serverURL) {
+        val serverURLFullURL = (serverURL ?: return@LaunchedEffect).fullURL
+        val isServerURLValid = Patterns.WEB_URL.matcher(serverURLFullURL).matches()
+        if (!isServerURLValid && navBackStackEntry?.destination?.route != "Settings") {
+            navController.navigate("Settings")
+        }
+    }
+
     Box {
-        val serverURL by appViewModel.serverURL.collectAsState()
-        val isServerURLValid = Patterns.WEB_URL.matcher(serverURL).matches()
-        LaunchedEffect(Unit) { if (!isServerURLValid) { navController.navigate("Settings") } }
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
         NavHost(
             modifier = Modifier.background(color = colorResource(R.color.backgroundColor)),
             navController = navController,
@@ -51,7 +55,6 @@ fun AppScreen(
             composable(route = "Settings") { SettingsScreen(settingsViewModel = settingsViewModel) }
             composable(route = "TVShows") {
                 TVShowsScreen(
-                    serverURLChanged = isServerURLValid,
                     tvShowsViewModel = tvShowsViewModel,
                     onTVShowPressed = { navController.navigate(route = "TVShow") }
                 )

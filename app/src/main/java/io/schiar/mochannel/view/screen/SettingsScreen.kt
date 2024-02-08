@@ -25,9 +25,11 @@ import io.schiar.mochannel.viewmodel.SettingsViewModel
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
-    val prefix by settingsViewModel.prefix.collectAsState()
-    val url by settingsViewModel.url.collectAsState()
-    val port by settingsViewModel.port.collectAsState()
+    val serverURL by settingsViewModel.serverURL.collectAsState()
+    val fullURL = serverURL?.fullURL ?: return
+    val prefix = serverURL?.prefix ?: return
+    val url = serverURL?.url ?: return
+    val port = serverURL?.port ?: return
 
     var isServerURLFocused by remember { mutableStateOf(value = false) }
     var isServerURLMenuFocused by remember { mutableStateOf(value = false) }
@@ -37,12 +39,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
     Row(modifier = Modifier.fillMaxHeight().padding(top = 50.dp, bottom = 50.dp, end = 50.dp)) {
         TitledView(modifier = Modifier.weight(1f), title = "Settings") {
             SettingsListView(
-                labelValue = listOf(
-                    Pair(
-                        "Server URL",
-                        "${prefix.lowercase()}://$url${if (port.isEmpty()) "" else ":$port"}"
-                    )
-                ),
+                labelValue = listOf(Pair("Server URL", fullURL)),
                 firstItemFocused = true,
                 onIndexFocusChanged = { _, isFocused -> isServerURLFocused = isFocused }
             )

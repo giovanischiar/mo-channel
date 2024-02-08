@@ -25,6 +25,8 @@ data class ServerURL(val prefix: String = "HTTP", val url: String = "", val port
         )
     }
 
+    fun isEmpty(): Boolean { return url.isEmpty() }
+
     override fun toString(): String {
         return "${if (prefix == "") "" else "$prefix://"}$url${if (port == "") "" else ":$port"}"
     }

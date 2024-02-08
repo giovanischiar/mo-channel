@@ -2,6 +2,7 @@ package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.repository.MainRepository
 import io.schiar.mochannel.model.repository.TVShowsRepository
@@ -18,14 +19,19 @@ class TVShowsViewModel(
     private val _tvShows = MutableStateFlow<List<TVShowViewData>>(emptyList())
     val tvShows: StateFlow<List<TVShowViewData>> = _tvShows
 
+    private fun onServerURLChanged(serverURL: ServerURL) {
+        if (!serverURL.isEmpty()) {
+            viewModelScope.launch { repository.loadTVShows() }
+        }
+    }
+
     private fun onTVShowsChanged(tvShows: List<TVShow>) {
         _tvShows.update { tvShows.map { tvShow -> tvShow.toViewData() } }
     }
 
-    init { repository.subscribeForTVShows(::onTVShowsChanged) }
-
-    fun loadTVShows() {
-        viewModelScope.launch { repository.loadTVShows() }
+    init {
+        repository.subscribeForTVShows(::onTVShowsChanged)
+        repository.subscribeForServerURLs(::onServerURLChanged)
     }
 
     fun selectTVShowAt(index: Int) {

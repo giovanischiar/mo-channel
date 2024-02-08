@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
 }
 
 android {
@@ -92,4 +93,11 @@ dependencies {
     val tvCompose = "1.0.0-alpha10"
     implementation("androidx.tv:tv-foundation:$tvCompose")
     implementation("androidx.tv:tv-material:$tvCompose")
+
+    // Room for database persistence
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+}
 }
