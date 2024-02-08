@@ -22,8 +22,9 @@ class TVShowsViewModel(
         _tvShows.update { tvShows.map { tvShow -> tvShow.toViewData() } }
     }
 
-    init {
-        repository.subscribeForTVShows(::onTVShowsChanged)
+    init { repository.subscribeForTVShows(::onTVShowsChanged) }
+
+    fun loadTVShows() {
         viewModelScope.launch { repository.loadTVShows() }
     }
 

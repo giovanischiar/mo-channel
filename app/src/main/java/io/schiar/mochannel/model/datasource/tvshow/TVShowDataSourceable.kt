@@ -1,4 +1,4 @@
-package io.schiar.mochannel.model.datasource
+package io.schiar.mochannel.model.datasource.tvshow
 
 import io.schiar.mochannel.model.TVShow
 

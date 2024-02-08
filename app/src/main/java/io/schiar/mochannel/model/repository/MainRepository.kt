@@ -2,8 +2,8 @@ package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.TVShowDataSourceable
-import io.schiar.mochannel.model.datasource.TVShowDataSource
+import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSource
+import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSourceable
 
 class MainRepository(
     private val tvShowDataSourceable: TVShowDataSourceable = TVShowDataSource()

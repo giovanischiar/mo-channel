@@ -9,7 +9,7 @@ abstract class RetrofitAPIHelper {
         @Volatile
         private var Instance: Retrofit? = null
         fun getAPI(): Retrofit {
-            val baseUrl = "http://192.168.0.12:3000/"
+            val baseUrl = "http://localhost/"
             val gson = GsonBuilder().create()
             return Instance ?: synchronized(this) {
                 Retrofit.Builder()

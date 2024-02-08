@@ -44,6 +44,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.leanback:leanback:1.0.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
 
     // ExoPlayer
     val mediaVersion = "1.2.1"

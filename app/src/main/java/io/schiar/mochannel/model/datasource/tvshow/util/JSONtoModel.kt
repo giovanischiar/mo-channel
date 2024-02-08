@@ -1,9 +1,9 @@
-package io.schiar.mochannel.model.datasource
+package io.schiar.mochannel.model.datasource.tvshow.util
 
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.api.json.EpisodeJSON
-import io.schiar.mochannel.model.datasource.api.json.TVShowJSON
+import io.schiar.mochannel.model.datasource.tvshow.api.json.EpisodeJSON
+import io.schiar.mochannel.model.datasource.tvshow.api.json.TVShowJSON
 
 fun EpisodeJSON.toEpisode(): Episode {
     return Episode(name = name, url = url)
