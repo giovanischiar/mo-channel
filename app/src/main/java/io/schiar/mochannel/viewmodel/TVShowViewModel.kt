@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.repository.MainRepository
 import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.view.viewdata.EpisodeViewData
 import io.schiar.mochannel.view.viewdata.TVShowViewData
@@ -14,9 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TVShowViewModel(
-    private val repository: TVShowRepository = MainRepository()
-) : ViewModel() {
+class TVShowViewModel(private val tvShowRepository: TVShowRepository) : ViewModel() {
     private val _currentTVShow = MutableStateFlow<TVShowViewData?>(value = null)
     val currentTVShow: StateFlow<TVShowViewData?> = _currentTVShow
     private val _currentEpisodesFromSeason = MutableStateFlow<List<EpisodeViewData>>(
@@ -33,17 +30,17 @@ class TVShowViewModel(
     }
 
     init {
-        repository.subscribeForCurrentTVShow(::onCurrentTVShowChanged)
-        repository.subscribeForCurrentEpisodesFromSeason(::onCurrentEpisodesFromSeasonChanged)
+        tvShowRepository.subscribeForCurrentTVShow(::onCurrentTVShowChanged)
+        tvShowRepository.subscribeForCurrentEpisodesFromSeason(::onCurrentEpisodesFromSeasonChanged)
     }
 
-    fun selectEpisodesFromSeasonAt(index: Int) {
-        viewModelScope.launch { repository.selectEpisodesFromSeasonAt(index = index) }
+    fun selectEpisodesFromSeasonAt(index: Int) = viewModelScope.launch {
+        tvShowRepository.selectEpisodesFromSeasonAt(index = index)
     }
 
-    fun selectEpisodeOnIndexFromSeasonAt(index: Int, episodeIndex: Int) {
-        viewModelScope.launch {
-            repository.urlsOfEpisodesFromIndexOfSeasonAt(index = index, episodeIndex = episodeIndex)
-        }
+    fun selectEpisodeOnIndexFromSeasonAt(index: Int, episodeIndex: Int) = viewModelScope.launch {
+        tvShowRepository.urlsOfEpisodesFromIndexOfSeasonAt(
+            index = index, episodeIndex = episodeIndex
+        )
     }
 }

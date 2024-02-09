@@ -1,4 +1,4 @@
-package io.schiar.mochannel
+package io.schiar.mochannel.library.retrofit
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

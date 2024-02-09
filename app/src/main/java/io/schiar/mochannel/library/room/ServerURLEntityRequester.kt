@@ -1,4 +1,4 @@
-package io.schiar.mochannel.model.datasource.settings.database
+package io.schiar.mochannel.library.room
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface ServerURLDAO {
+interface ServerURLEntityRequester {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(serverURLEntity: ServerURLEntity): Long
 

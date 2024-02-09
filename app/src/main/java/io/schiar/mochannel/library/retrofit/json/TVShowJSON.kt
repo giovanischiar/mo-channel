@@ -1,3 +1,3 @@
-package io.schiar.mochannel.model.datasource.tvshow.api.json
+package io.schiar.mochannel.library.retrofit.json
 
 data class TVShowJSON(val name: String, val episodes: List<EpisodeJSON>)

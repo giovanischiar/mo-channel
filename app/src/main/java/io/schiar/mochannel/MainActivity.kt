@@ -6,16 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import io.schiar.mochannel.library.retrofit.RetrofitAPIHelper
+import io.schiar.mochannel.library.retrofit.TVShowsServerAPI
+import io.schiar.mochannel.library.room.MoChannelDatabase
+import io.schiar.mochannel.model.Episode
+import io.schiar.mochannel.model.ServerURL
+import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.settings.SettingsDataSource
-import io.schiar.mochannel.model.datasource.settings.database.ServerURLEntity
-import io.schiar.mochannel.model.datasource.settings.util.ServerURLLocalDAO
+import io.schiar.mochannel.model.datasource.settings.requester.ServerURLDatabaseRequester
+import io.schiar.mochannel.model.datasource.settings.requester.ServerURLMemoryRequester
+import io.schiar.mochannel.model.datasource.settings.requester.ServerURLRequester
 import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSource
-import io.schiar.mochannel.model.datasource.tvshow.api.API
-import io.schiar.mochannel.model.datasource.tvshow.api.TVShowsServerAPI
-import io.schiar.mochannel.model.datasource.tvshow.api.json.EpisodeJSON
-import io.schiar.mochannel.model.datasource.tvshow.api.json.TVShowJSON
-import io.schiar.mochannel.model.datasource.tvshow.util.TVShowsLocalAPI
-import io.schiar.mochannel.model.repository.MainRepository
+import io.schiar.mochannel.model.datasource.tvshow.requester.TVShowsLocalRequester
+import io.schiar.mochannel.model.datasource.tvshow.requester.TVShowsServerRequester
+import io.schiar.mochannel.model.repository.SettingsRepository
+import io.schiar.mochannel.model.repository.TVShowRepository
+import io.schiar.mochannel.model.repository.TVShowsRepository
+import io.schiar.mochannel.model.repository.VideoRepository
 import io.schiar.mochannel.view.screen.AppScreen
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
@@ -24,22 +31,47 @@ import io.schiar.mochannel.viewmodel.VideoViewModel
 import io.schiar.mochannel.viewmodel.util.ViewModelFactory
 
 class MainActivity : ComponentActivity() {
+    private fun createViewModelFactory(
+        serverURLRequester: ServerURLRequester, tvShowsServerAPI: TVShowsServerAPI
+    ): ViewModelFactory {
+        val settingsDataSource = SettingsDataSource(serverURLRequester = serverURLRequester)
+        val tvShowDataSource = TVShowDataSource(
+            tvShowsRequester = TVShowsServerRequester(
+                tvShowsServerAPI = tvShowsServerAPI, serverURLRequester = serverURLRequester
+            ),
+        )
+        val videoRepository = VideoRepository()
+        val tvShowRepository = TVShowRepository(
+            tvShowDataSourceable = tvShowDataSource,
+            currentEpisodeURLsListener = videoRepository
+        )
+        val tvShowsRepository = TVShowsRepository(
+            tvShowDataSourceable = tvShowDataSource,
+            currentTVShowChangedListener = tvShowRepository
+        )
+
+        val settingsRepository = SettingsRepository(
+            settingsDataSourceable = settingsDataSource,
+            serverURLChangedListener = tvShowsRepository
+        )
+        return ViewModelFactory(
+            settingsRepository = settingsRepository,
+            tvShowsRepository = tvShowsRepository,
+            tvShowRepository = tvShowRepository,
+            videoRepository = videoRepository
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val moChannelDatabase = MoChannelDatabase.getDatabase(context = applicationContext)
-        val retrofitAPIHelper = RetrofitAPIHelper.getAPI()
-        val api = retrofitAPIHelper.create(API::class.java)
-        val settingsDataSource = SettingsDataSource(serverURLDAO = moChannelDatabase.serverURLDAO())
-        val tvShowDataSource = TVShowDataSource(
-            tvShowsAPI = TVShowsServerAPI(api = api),
-            serverURLRetriever = settingsDataSource
-        )
-        val mainRepository = MainRepository(
-            tvShowDataSourceable = tvShowDataSource,
-            settingsDataSourceable = settingsDataSource
-        )
-        val viewModelFactory = ViewModelFactory(
-            mainRepository = mainRepository
+        val serverURLEntityRequester = moChannelDatabase.serverURLRequester()
+        val api = RetrofitAPIHelper.getAPI().create(TVShowsServerAPI::class.java)
+        val viewModelFactory = createViewModelFactory(
+            serverURLRequester = ServerURLDatabaseRequester(
+                serverURLEntityRequester = serverURLEntityRequester
+            ),
+            tvShowsServerAPI = api
         )
         val viewModelProvider = ViewModelProvider(owner = this, factory = viewModelFactory)
         setContent {
@@ -55,93 +87,111 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     fun MainActivityTVShowsPreview() {
-        val serverURLEntity = ServerURLEntity(
+        val serverURL = ServerURL(
             prefix = "https", url = "www.my-concerts-drive.com", port = "8080"
         )
 
-        val tvShowJSONs = listOf(
-            TVShowJSON(
+        val tvShows = listOf(
+            TVShow(
                 name = "U2",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Doja Cat",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Jack Harlow",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Twenty one Pilots",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Taylor Swift",
                 episodes = listOf(
-                    EpisodeJSON(name = "Reputation Tour 2018 Santa Clara/...Ready for It? Concert Beginning", url = ""),
-                    EpisodeJSON(name = "Reputation Tour 2018 Santa Clara/Style, Love Story, You Belong With Me, Performance snippets", url = ""),
-                    EpisodeJSON(name = "Reputation Tour 2018 Santa Clara/Singing Along with Delicate", url = ""),
-                    EpisodeJSON(name = "Reputation Tour 2018 Santa Clara/End Game Chorus Performance", url = ""),
-                    EpisodeJSON(name = "Reputation Tour 2018 Santa Clara/New Year's Day (encore)", url = ""),
-                    EpisodeJSON(name = "The Eras Tour 2024 Santa Clara/New Year's Day (encore)", url = "")
+                    Episode(name = "Reputation Tour 2018 Santa Clara/...Ready for It? Concert Beginning", url = ""),
+                    Episode(name = "Reputation Tour 2018 Santa Clara/Style, Love Story, You Belong With Me, Performance snippets", url = ""),
+                    Episode(name = "Reputation Tour 2018 Santa Clara/Singing Along with Delicate", url = ""),
+                    Episode(name = "Reputation Tour 2018 Santa Clara/End Game Chorus Performance", url = ""),
+                    Episode(name = "Reputation Tour 2018 Santa Clara/New Year's Day (encore)", url = ""),
+                    Episode(name = "The Eras Tour 2024 Santa Clara/New Year's Day (encore)", url = "")
                 )
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Bad Bunny",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Metallica",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Maroon 5",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Panic! at The Disco",
                 episodes = listOf(
-                    EpisodeJSON(name = "Viva Las Vengeance Tour 2023 San Francisco/Say Amen (first song)", url = ""),
-                    EpisodeJSON(name = "Viva Las Vengeance Tour 2023 San Francisco/Viva Las Vengeance", url = ""),
-                    EpisodeJSON(name = "Pray for the Wicked Tour 2018 San Jose/Nine in the Afternoon", url = "")
+                    Episode(
+                        name = "Viva Las Vengeance Tour 2023 San Francisco/Say Amen (first song)",
+                        url = ""
+                    ),
+                    Episode(
+                        name = "Viva Las Vengeance Tour 2023 San Francisco/Viva Las Vengeance",
+                        url = ""
+                    ),
+                    Episode(
+                        name = "Pray for the Wicked Tour 2018 San Jose/Nine in the Afternoon",
+                        url = ""
+                    )
                 )
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Mika",
                 episodes = listOf()
             ),
 
-            TVShowJSON(
+            TVShow(
                 name = "Aqua",
                 episodes = listOf()
             ),
         )
         val settingsDataSource = SettingsDataSource(
-            serverURLDAO = ServerURLLocalDAO(serverURLEntity = serverURLEntity)
+            serverURLRequester = ServerURLMemoryRequester(serverURL = serverURL)
         )
         val tvShowDataSource = TVShowDataSource(
-            tvShowsAPI = TVShowsLocalAPI(tvShowJSONs = tvShowJSONs),
-            serverURLRetriever = settingsDataSource
+            tvShowsRequester = TVShowsLocalRequester(tvShows = tvShows)
         )
-        val mainRepository = MainRepository(
+        val videoRepository = VideoRepository()
+        val tvShowRepository = TVShowRepository(
             tvShowDataSourceable = tvShowDataSource,
-            settingsDataSourceable = settingsDataSource
+            currentEpisodeURLsListener = videoRepository
+        )
+        val tvShowsRepository = TVShowsRepository(
+            tvShowDataSourceable = tvShowDataSource,
+            currentTVShowChangedListener = tvShowRepository
+        )
+
+        val settingsRepository = SettingsRepository(
+            settingsDataSourceable = settingsDataSource,
+            serverURLChangedListener = tvShowsRepository
         )
         AppScreen(
-            settingsViewModel = SettingsViewModel(repository = mainRepository),
-            tvShowsViewModel = TVShowsViewModel(repository = mainRepository),
-            tvShowViewModel = TVShowViewModel(repository = mainRepository),
-            videoViewModel =  VideoViewModel(repository = mainRepository)
+            settingsViewModel = SettingsViewModel(settingsRepository = settingsRepository),
+            tvShowsViewModel = TVShowsViewModel(tvShowsRepository = tvShowsRepository),
+            tvShowViewModel = TVShowViewModel(tvShowRepository = tvShowRepository),
+            videoViewModel =  VideoViewModel(videoRepository = videoRepository)
         )
     }
 
@@ -149,16 +199,26 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainActivityPreview() {
         val settingsDataSource = SettingsDataSource()
-        val tvShowDataSource = TVShowDataSource(serverURLRetriever = settingsDataSource)
-        val mainRepository = MainRepository(
+        val tvShowDataSource = TVShowDataSource()
+        val videoRepository = VideoRepository()
+        val tvShowRepository = TVShowRepository(
             tvShowDataSourceable = tvShowDataSource,
-            settingsDataSourceable = settingsDataSource
+            currentEpisodeURLsListener = videoRepository
+        )
+        val tvShowsRepository = TVShowsRepository(
+            tvShowDataSourceable = tvShowDataSource,
+            currentTVShowChangedListener = tvShowRepository
+        )
+
+        val settingsRepository = SettingsRepository(
+            settingsDataSourceable = settingsDataSource,
+            serverURLChangedListener = tvShowsRepository
         )
         AppScreen(
-            settingsViewModel = SettingsViewModel(repository = mainRepository),
-            tvShowsViewModel = TVShowsViewModel(repository = mainRepository),
-            tvShowViewModel = TVShowViewModel(repository = mainRepository),
-            videoViewModel =  VideoViewModel(repository = mainRepository)
+            settingsViewModel = SettingsViewModel(settingsRepository = settingsRepository),
+            tvShowsViewModel = TVShowsViewModel(tvShowsRepository = tvShowsRepository),
+            tvShowViewModel = TVShowViewModel(tvShowRepository = tvShowRepository),
+            videoViewModel =  VideoViewModel(videoRepository = videoRepository)
         )
     }
 }

@@ -1,8 +1,8 @@
 package io.schiar.mochannel.model.datasource.settings
 
 import io.schiar.mochannel.model.ServerURL
-import io.schiar.mochannel.model.datasource.ServerURLRetriever
 
-interface SettingsDataSourceable: ServerURLRetriever {
+interface SettingsDataSourceable {
+    suspend fun retrieveServerURL(): ServerURL
     suspend fun updateServerURLTo(newServerURL: ServerURL)
 }

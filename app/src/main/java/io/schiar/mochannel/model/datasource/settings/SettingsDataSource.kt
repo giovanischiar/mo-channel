@@ -1,31 +1,24 @@
 package io.schiar.mochannel.model.datasource.settings
 
 import io.schiar.mochannel.model.ServerURL
-import io.schiar.mochannel.model.datasource.settings.database.ServerURLDAO
-import io.schiar.mochannel.model.datasource.settings.util.ServerURLLocalDAO
-import io.schiar.mochannel.model.datasource.settings.util.toServerURL
-import io.schiar.mochannel.model.datasource.settings.util.toServerURLEntity
+import io.schiar.mochannel.model.datasource.settings.requester.ServerURLMemoryRequester
+import io.schiar.mochannel.model.datasource.settings.requester.ServerURLRequester
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SettingsDataSource(
-    private val serverURLDAO: ServerURLDAO = ServerURLLocalDAO()
+    private val serverURLRequester: ServerURLRequester = ServerURLMemoryRequester()
 ): SettingsDataSourceable {
     private var serverURL: ServerURL? = null
 
     override suspend fun retrieveServerURL(): ServerURL {
         if (serverURL == null) {
-            serverURL = withContext(Dispatchers.IO) { serverURLDAO.select()?.toServerURL() }
+            serverURL = withContext(Dispatchers.IO) { serverURLRequester.requestServerURL() }
             if (serverURL == null) {
-                val emptyServerToInsert = ServerURL()
                 coroutineScope {
-                    launch(Dispatchers.IO) {
-                        serverURLDAO.insert(
-                            serverURLEntity = emptyServerToInsert.toServerURLEntity()
-                        )
-                    }
+                    launch(Dispatchers.IO) { serverURLRequester.insert(serverURL = ServerURL()) }
                 }
             }
         }
@@ -34,8 +27,6 @@ class SettingsDataSource(
 
     override suspend fun updateServerURLTo(newServerURL: ServerURL): Unit = coroutineScope {
         serverURL = newServerURL
-        launch(Dispatchers.IO) {
-            serverURLDAO.update(serverURLEntity = newServerURL.toServerURLEntity())
-        }
+        launch(Dispatchers.IO) { serverURLRequester.update(serverURL = newServerURL) }
     }
 }

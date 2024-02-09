@@ -1,11 +1,9 @@
-package io.schiar.mochannel
+package io.schiar.mochannel.library.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import io.schiar.mochannel.model.datasource.settings.database.ServerURLDAO
-import io.schiar.mochannel.model.datasource.settings.database.ServerURLEntity
 
 @Database(
     entities = [ServerURLEntity::class],
@@ -13,7 +11,7 @@ import io.schiar.mochannel.model.datasource.settings.database.ServerURLEntity
     exportSchema = false
 )
 abstract class MoChannelDatabase : RoomDatabase() {
-    abstract fun serverURLDAO(): ServerURLDAO
+    abstract fun serverURLRequester(): ServerURLEntityRequester
 
     companion object {
         @Volatile

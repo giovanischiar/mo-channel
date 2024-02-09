@@ -1,4 +1,4 @@
-package io.schiar.mochannel.model.datasource.settings.database
+package io.schiar.mochannel.library.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
