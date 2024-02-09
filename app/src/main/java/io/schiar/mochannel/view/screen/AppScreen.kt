@@ -72,7 +72,7 @@ fun AppScreen(
             IconButton(
                 modifier = Modifier
                     .align(alignment = Alignment.TopEnd)
-                    .padding(top = 54.dp, end = 50.dp),
+                    .padding(top = 50.dp, end = 50.dp),
                 onClick = { navController.navigate(route = "Settings") }
             ) {
                 Icon(

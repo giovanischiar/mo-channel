@@ -1,10 +1,10 @@
-package io.schiar.mochannel.model.datasource.settings
+package io.schiar.mochannel.model.datasource.settings.util
 
 import io.schiar.mochannel.model.datasource.settings.database.ServerURLDAO
 import io.schiar.mochannel.model.datasource.settings.database.ServerURLEntity
 
-class ServerURLLocalDAO: ServerURLDAO {
-    private var currentServerURLEntity: ServerURLEntity? = null
+class ServerURLLocalDAO(serverURLEntity: ServerURLEntity? = null): ServerURLDAO {
+    private var currentServerURLEntity: ServerURLEntity? = serverURLEntity
 
     override fun insert(serverURLEntity: ServerURLEntity): Long {
         currentServerURLEntity = serverURLEntity

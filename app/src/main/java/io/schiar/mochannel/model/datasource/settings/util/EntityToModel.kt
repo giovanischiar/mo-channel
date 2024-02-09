@@ -1,4 +1,4 @@
-package io.schiar.mochannel.model.datasource.settings
+package io.schiar.mochannel.model.datasource.settings.util
 
 import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.settings.database.ServerURLEntity
