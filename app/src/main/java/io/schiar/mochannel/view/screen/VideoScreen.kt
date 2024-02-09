@@ -29,6 +29,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.SubtitleConfiguration
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.Log
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -66,7 +67,14 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
 
     val playerView = remember {
         PlayerView(context).apply {
-            player = exoPlayer
+            fun onIsPlayerChanged(isPlaying: Boolean) { keepScreenOn = isPlaying }
+            player = exoPlayer.apply {
+                addListener(object : Player.Listener {
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        onIsPlayerChanged(isPlaying = isPlaying)
+                    }
+                })
+            }
             layoutParams =
                 FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
