@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.schiar.mochannel.view.components.ListView
@@ -20,7 +21,7 @@ fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = 
     val currentTVShow by tvShowViewModel.currentTVShow.collectAsState()
     val currentEpisodesFromSeason by tvShowViewModel.currentEpisodesFromSeason.collectAsState()
     (currentTVShow ?: return).name
-    val currentSeasonIndex by remember { mutableIntStateOf(value = 0) }
+    var currentSeasonIndex by remember { mutableIntStateOf(value = 0) }
     val seasonTitles = (currentTVShow ?: return).seasonTitles
     LaunchedEffect(Unit) { tvShowViewModel.selectEpisodesFromSeasonAt(index = currentSeasonIndex) }
     Row {
@@ -34,9 +35,11 @@ fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = 
                     buttonTitles = seasonTitles,
                     onButtonFocusedAt = { index ->
                         tvShowViewModel.selectEpisodesFromSeasonAt(index = index)
+                        currentSeasonIndex = index
                     },
                     onButtonPressedAt = { index ->
                         tvShowViewModel.selectEpisodesFromSeasonAt(index = index)
+                        currentSeasonIndex = index
                     }
                 )
             }
