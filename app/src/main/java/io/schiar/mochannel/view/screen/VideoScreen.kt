@@ -28,7 +28,6 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.SubtitleConfiguration
 import androidx.media3.common.MimeTypes
-import androidx.media3.common.util.Log
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -100,7 +99,6 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
             modifier = Modifier
                 .focusable()
                 .onKeyEvent {
-                    print(Log.d("a", "Key Pressed, $it"))
                     when (it.nativeKeyEvent.keyCode) {
                         KeyEvent.KEYCODE_DPAD_RIGHT -> {
                             playerView.player?.seekForward(); return@onKeyEvent true
@@ -115,7 +113,6 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
                             playerView.player?.pause(); return@onKeyEvent true
                         }
                     }
-
                     playerView.dispatchKeyEvent(it.nativeKeyEvent)
                 },
             factory = { playerView }
