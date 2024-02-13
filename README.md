@@ -17,14 +17,14 @@
   This application requires downloading the [mo-channel-server](https://github.com/giovanischiar/mo-channel-server) executable on the machine where the videos are located in order to be available to the application.
 
 ## Use Cases
- |
-:-:|
-<img src="readme-res/screenshots/editting-server-url.gif" width="800" height="450">|
-This is the app when you open it for the first time. Since the Server URL is empty, it opens the settings to input the Server URL. If you are running the server on your computer, you'll need to input the IP number the server will tell you, along with the port number.|
-<img src="readme-res/screenshots/initial-screel-with-content.png" width="800" height="450">|
-Here is the screen with some content registered. In this example, you can store concerts you've recorded on your computer, run the [mo-channel-server](https://github.com/giovanischiar/mo-channel-server), and input the URL in the settings.|
-<img src="readme-res/screenshots/tv-show-screen.png" width="800" height="450">|
-This is the page when you press on one item. It shows the 'episodes' per 'season'. Episodes are the videos, while 'season' refers to the subfolder where you put the videos.|
+|||
+|:-:|:-:|
+||<img src="readme-res/screenshots/editting-server-url.gif" width="800" height="450">|
+||This is the app when you open it for the first time. Since the Server URL is empty, it opens the settings to input the Server URL. If you are running the server on your computer, you'll need to input the IP number the server will tell you, along with the port number.|
+||<img src="readme-res/screenshots/initial-screel-with-content.png" width="800" height="450">|
+||Here is the screen with some content registered. In this example, you can store concerts you've recorded on your computer, run the [mo-channel-server](https://github.com/giovanischiar/mo-channel-server), and input the URL in the settings.|
+||<img src="readme-res/screenshots/tv-show-screen.png" width="800" height="450">|
+||This is the page when you press on one item. It shows the 'episodes' per 'season'. Episodes are the videos, while 'season' refers to the subfolder where you put the videos.|
 
 # Technologies
 |Technology|Purpose|
