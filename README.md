@@ -17,6 +17,7 @@
   - [Package `view` with `viewmodel`](#package-view-with-viewmodel)
   - [Package `view.viewdata`](#package-viewviewdata)
   - [Package `viewmodel` with `view.viewdata`](#package-viewmodel-with-viewviewdata)
+  - [Package `viewmodel` with `model.repository`](#package-viewmodel-with-modelrepository)
 - [Future Tasks](#future-tasks)
 
 ## Usage
@@ -74,6 +75,14 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/viewmodel-viewdata-diagram.dark.svg">
     <img alt="Package viewmodel with viewdata Diagram" src="./readme-res/diagrams/viewmodel-viewdata-diagram.light.svg">
+  </picture>
+
+### Package `viewmodel` with `model.repository`
+  View Models also serve as a [façade](https://en.wikipedia.org/wiki/Facade_pattern), triggering methods in `model.repository` classes. This diagram shows that each View Model has its own Repository class and illustrates all methods each View Model calls, represented by arrows from View Models to Repository classes.
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/viewmodel-repository-diagram.dark.svg">
+   <img alt="Package viewmodel with repository Diagram" src="./readme-res/diagrams/viewmodel-repository-diagram.light.svg">
   </picture>
 
 ## Future Tasks
