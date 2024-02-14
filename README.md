@@ -16,6 +16,7 @@
   - [Package `io.schiar.ruleofthree`](#package-ioschiarruleofthree)
   - [Package `view` with `viewmodel`](#package-view-with-viewmodel)
   - [Package `view.viewdata`](#package-viewviewdata)
+  - [Package `viewmodel` with `view.viewdata`](#package-viewmodel-with-viewviewdata)
 - [Future Tasks](#future-tasks)
 
 ## Usage
@@ -65,6 +66,14 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/viewdata-diagram.dark.svg">
     <img alt="Package viewdata Diagram" src="./readme-res/diagrams/viewdata-diagram.light.svg">
+  </picture>
+
+### Package `viewmodel` with `view.viewdata`
+  View Models serve the `view` with objects made from `viewmodel.viewdata` classes, collections, or primitive objects encapsulated by State Flows. This diagram represents all the associations among the classes in `viewmodel` and `view.viewdata`.
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/viewmodel-viewdata-diagram.dark.svg">
+    <img alt="Package viewmodel with viewdata Diagram" src="./readme-res/diagrams/viewmodel-viewdata-diagram.light.svg">
   </picture>
 
 ## Future Tasks
