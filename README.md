@@ -11,6 +11,9 @@
 - [Usage](#usage)
 - [Use Cases](#use-cases)
 - [Technologies](#technologies)
+- [Structure](#structure)
+- [Diagrams](#diagrams)
+  - [Package `io.schiar.ruleofthree`](#package-ioschiarruleofthree)
 - [Future Tasks](#future-tasks)
 
 ## Usage
@@ -32,6 +35,19 @@
 |<img src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png" width="50" height="50"><br>[Jetpack Compose](https://developer.android.com/jetpack/compose)|Design UI|
 |<img src="https://avatars.githubusercontent.com/u/1342004?s=48&v=4" width="50" height="50"><br>[Exoplayer](https://github.com/google/ExoPlayer)|The video player used by this application|
 |<img src="https://4.bp.blogspot.com/-NnAkV5vpYuw/XNMYF4RtLvI/AAAAAAAAI70/kdgLm3cnTO4FB4rUC0v9smscN3zHJPlLgCLcBGAs/s1600/Jetpack_logo%2B%25282%2529.png" width="50" height="50"><br>[Room](https://developer.android.com/jetpack/androidx/releases/room)|Persist application data|
+
+## Structure
+  Please check [my other project](https://github.com/giovanischiar/fridgnet?tab=readme-ov-file#structure) to learn more about the notation I used to create the diagrams in this project.
+
+## Diagrams
+
+### Package `io.schiar.ruleofthree`
+  This diagram shows all the packages the application has, along with their structures. Some packages are simplified, while others are more detailed.
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/io-schiar-mochannel-structure-diagram.dark.svg">
+    <img alt="Package io.schiar.mochannel Diagram" src="./readme-res/diagrams/io-schiar-mochannel-structure-diagram.light.svg">
+  </picture>
 
 ## Future Tasks
   - Create Tests.
