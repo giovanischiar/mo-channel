@@ -18,6 +18,7 @@
   - [Package `view.viewdata`](#package-viewviewdata)
   - [Package `viewmodel` with `view.viewdata`](#package-viewmodel-with-viewviewdata)
   - [Package `viewmodel` with `model.repository`](#package-viewmodel-with-modelrepository)
+  - [Package `model`](#package-model)
 - [Future Tasks](#future-tasks)
 
 ## Usage
@@ -83,6 +84,14 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/viewmodel-repository-diagram.dark.svg">
    <img alt="Package viewmodel with repository Diagram" src="./readme-res/diagrams/viewmodel-repository-diagram.light.svg">
+  </picture>
+
+### Package `model`
+  Model classes handle the logic of the application. This diagram represents all the associations among the classes in the `model`.
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/model-diagram.dark.svg">
+    <img alt="Package model" src="./readme-res/diagrams/model-diagram.light.svg">
   </picture>
 
 ## Future Tasks
