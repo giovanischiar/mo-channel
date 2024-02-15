@@ -10,10 +10,10 @@ import kotlinx.coroutines.withContext
 
 class SettingsDataSource(
     private val serverURLRequester: ServerURLRequester = ServerURLMemoryRequester()
-): SettingsDataSourceable {
+) {
     private var serverURL: ServerURL? = null
 
-    override suspend fun retrieveServerURL(): ServerURL {
+    suspend fun retrieveServerURL(): ServerURL {
         if (serverURL == null) {
             serverURL = withContext(Dispatchers.IO) { serverURLRequester.requestServerURL() }
             if (serverURL == null) {
@@ -25,7 +25,7 @@ class SettingsDataSource(
         return serverURL ?: ServerURL()
     }
 
-    override suspend fun updateServerURLTo(newServerURL: ServerURL): Unit = coroutineScope {
+    suspend fun updateServerURLTo(newServerURL: ServerURL): Unit = coroutineScope {
         serverURL = newServerURL
         launch(Dispatchers.IO) { serverURLRequester.update(serverURL = newServerURL) }
     }

@@ -2,12 +2,12 @@ package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSourceable
+import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentEpisodeURLsListener
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
 
 class TVShowRepository(
-    private val tvShowDataSourceable: TVShowDataSourceable,
+    private val tvShowDataSource: TVShowDataSource,
     private val currentEpisodeURLsListener: CurrentEpisodeURLsListener
 ): CurrentTVShowListener {
     private var currentTVShowCallback: ((TVShow) -> Unit)? = null
@@ -22,14 +22,14 @@ class TVShowRepository(
     }
 
     suspend fun selectEpisodesFromSeasonAt(index: Int) {
-        val currentTVShow = tvShowDataSourceable.retrieveCurrentTVShow() ?: return
+        val currentTVShow = tvShowDataSource.retrieveCurrentTVShow() ?: return
         (currentEpisodesFromSeasonCallback ?: {})(
             currentTVShow.episodesFromSeasonAt(index = index)
         )
     }
 
     suspend fun urlsOfEpisodesFromIndexOfSeasonAt(index: Int, episodeIndex: Int) {
-        val currentTVShow = tvShowDataSourceable.retrieveCurrentTVShow() ?: return
+        val currentTVShow = tvShowDataSource.retrieveCurrentTVShow() ?: return
         val urls = currentTVShow.urlsOfEpisodesFromIndexOfSeasonAt(
             index = index, episodeIndex = episodeIndex
         )

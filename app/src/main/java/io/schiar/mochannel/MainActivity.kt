@@ -42,16 +42,16 @@ class MainActivity : ComponentActivity() {
         )
         val videoRepository = VideoRepository()
         val tvShowRepository = TVShowRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentEpisodeURLsListener = videoRepository
         )
         val tvShowsRepository = TVShowsRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentTVShowChangedListener = tvShowRepository
         )
 
         val settingsRepository = SettingsRepository(
-            settingsDataSourceable = settingsDataSource,
+            settingsDataSource = settingsDataSource,
             serverURLChangedListener = tvShowsRepository
         )
         return ViewModelFactory(
@@ -175,16 +175,16 @@ class MainActivity : ComponentActivity() {
         )
         val videoRepository = VideoRepository()
         val tvShowRepository = TVShowRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentEpisodeURLsListener = videoRepository
         )
         val tvShowsRepository = TVShowsRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentTVShowChangedListener = tvShowRepository
         )
 
         val settingsRepository = SettingsRepository(
-            settingsDataSourceable = settingsDataSource,
+            settingsDataSource = settingsDataSource,
             serverURLChangedListener = tvShowsRepository
         )
         AppScreen(
@@ -202,16 +202,16 @@ class MainActivity : ComponentActivity() {
         val tvShowDataSource = TVShowDataSource()
         val videoRepository = VideoRepository()
         val tvShowRepository = TVShowRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentEpisodeURLsListener = videoRepository
         )
         val tvShowsRepository = TVShowsRepository(
-            tvShowDataSourceable = tvShowDataSource,
+            tvShowDataSource = tvShowDataSource,
             currentTVShowChangedListener = tvShowRepository
         )
 
         val settingsRepository = SettingsRepository(
-            settingsDataSourceable = settingsDataSource,
+            settingsDataSource = settingsDataSource,
             serverURLChangedListener = tvShowsRepository
         )
         AppScreen(

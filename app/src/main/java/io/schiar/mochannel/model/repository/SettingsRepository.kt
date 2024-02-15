@@ -2,21 +2,20 @@ package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.settings.SettingsDataSource
-import io.schiar.mochannel.model.datasource.settings.SettingsDataSourceable
 import io.schiar.mochannel.model.repository.listeners.ServerURLChangedListener
 
 class SettingsRepository(
-    private val settingsDataSourceable: SettingsDataSourceable = SettingsDataSource(),
+    private val settingsDataSource: SettingsDataSource = SettingsDataSource(),
     private val serverURLChangedListener: ServerURLChangedListener
 ) {
     private var serverURLsCallback: ((ServerURL) -> Unit)? = null
 
     private suspend fun serverURLRetrievedFromDataSource(): ServerURL {
-        return settingsDataSourceable.retrieveServerURL()
+        return settingsDataSource.retrieveServerURL()
     }
 
     private suspend fun updateServerURLTo(newServerURL: ServerURL) {
-        settingsDataSourceable.updateServerURLTo(newServerURL = newServerURL)
+        settingsDataSource.updateServerURLTo(newServerURL = newServerURL)
         (serverURLsCallback ?: {})(newServerURL)
         serverURLChangedListener.onServerUrlChanged()
     }
@@ -41,7 +40,7 @@ class SettingsRepository(
     }
 
     suspend fun loadServerURL() {
-        val serverURL = settingsDataSourceable.retrieveServerURL()
+        val serverURL = settingsDataSource.retrieveServerURL()
         (serverURLsCallback ?: {})(serverURL)
         serverURLChangedListener.onServerUrlChanged()
     }
