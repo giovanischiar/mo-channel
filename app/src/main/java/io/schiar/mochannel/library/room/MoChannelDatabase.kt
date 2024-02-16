@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class MoChannelDatabase : RoomDatabase() {
-    abstract fun serverURLRequester(): ServerURLEntityRequester
+    abstract fun serverURLRoomDAO(): ServerURLRoomDAO
 
     companion object {
         @Volatile

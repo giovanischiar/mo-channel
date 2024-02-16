@@ -1,12 +1,12 @@
 package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.tvshow.TVShowDataSource
+import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
 import io.schiar.mochannel.model.repository.listeners.ServerURLChangedListener
 
 class TVShowsRepository(
-    private val tvShowDataSource: TVShowDataSource,
+    private val tvShowsDataSource: TVShowsDataSource,
     private val currentTVShowChangedListener: CurrentTVShowListener
 ): ServerURLChangedListener {
     private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
@@ -16,12 +16,12 @@ class TVShowsRepository(
     }
 
     override suspend fun onServerUrlChanged() {
-        val tvShows = tvShowDataSource.retrieveTVShows()
+        val tvShows = tvShowsDataSource.retrieveTVShows()
         tvShowsCallback?.let { it(tvShows) }
     }
 
     suspend fun selectTVShowAt(index: Int) {
-        val tvShow = tvShowDataSource.retrieveTVShowAt(index = index) ?: return
+        val tvShow = tvShowsDataSource.retrieveTVShowAt(index = index) ?: return
         currentTVShowChangedListener.onCurrentTVShow(tvShow = tvShow)
     }
 }

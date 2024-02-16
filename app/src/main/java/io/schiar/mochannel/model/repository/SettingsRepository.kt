@@ -1,7 +1,7 @@
 package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.ServerURL
-import io.schiar.mochannel.model.datasource.settings.SettingsDataSource
+import io.schiar.mochannel.model.datasource.SettingsDataSource
 import io.schiar.mochannel.model.repository.listeners.ServerURLChangedListener
 
 class SettingsRepository(

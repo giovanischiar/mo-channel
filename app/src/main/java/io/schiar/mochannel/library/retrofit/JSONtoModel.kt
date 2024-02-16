@@ -1,4 +1,4 @@
-package io.schiar.mochannel.model.datasource.tvshow.requester
+package io.schiar.mochannel.library.retrofit
 
 import io.schiar.mochannel.library.retrofit.json.EpisodeJSON
 import io.schiar.mochannel.library.retrofit.json.TVShowJSON

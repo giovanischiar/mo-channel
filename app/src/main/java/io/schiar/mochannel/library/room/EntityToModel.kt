@@ -1,6 +1,5 @@
-package io.schiar.mochannel.model.datasource.settings.requester
+package io.schiar.mochannel.library.room
 
-import io.schiar.mochannel.library.room.ServerURLEntity
 import io.schiar.mochannel.model.ServerURL
 
 fun ServerURLEntity.toServerURL(): ServerURL {

@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface ServerURLEntityRequester {
+interface ServerURLRoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(serverURLEntity: ServerURLEntity): Long
 
