@@ -1,9 +1,9 @@
-package io.schiar.mochannel.model.datasource.service.local
+package io.schiar.mochannel.model.datasource.local
 
 import io.schiar.mochannel.model.ServerURL
-import io.schiar.mochannel.model.datasource.service.ServerURLService
+import io.schiar.mochannel.model.datasource.ServerURLDataSource
 
-class ServerURLLocalService(serverURL: ServerURL? = null): ServerURLService {
+class ServerURLLocalDataSource(serverURL: ServerURL? = null): ServerURLDataSource {
     private var currentServerURL: ServerURL? = serverURL
 
     override suspend fun create(serverURL: ServerURL) {

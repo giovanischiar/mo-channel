@@ -1,11 +1,11 @@
 package io.schiar.mochannel.library.room
 
 import io.schiar.mochannel.model.ServerURL
-import io.schiar.mochannel.model.datasource.service.ServerURLService
+import io.schiar.mochannel.model.datasource.ServerURLDataSource
 
-class ServerURLRoomService(
+class ServerURLRoomDataSource(
     private val serverURLRoomDAO: ServerURLRoomDAO
-): ServerURLService {
+): ServerURLDataSource {
     override suspend fun create(serverURL: ServerURL) {
         serverURLRoomDAO.insert(serverURLEntity = serverURL.toServerURLEntity())
     }

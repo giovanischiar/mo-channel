@@ -9,15 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import io.schiar.mochannel.library.local.PreviewLocalData
 import io.schiar.mochannel.library.retrofit.RetrofitAPIHelper
 import io.schiar.mochannel.library.retrofit.TVShowsRetrofitAPI
-import io.schiar.mochannel.library.retrofit.TVShowsRetrofitService
+import io.schiar.mochannel.library.retrofit.TVShowsRetrofitDataSource
 import io.schiar.mochannel.library.room.MoChannelDatabase
-import io.schiar.mochannel.library.room.ServerURLRoomService
-import io.schiar.mochannel.model.datasource.SettingsDataSource
+import io.schiar.mochannel.library.room.ServerURLRoomDataSource
+import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
-import io.schiar.mochannel.model.datasource.service.ServerURLService
-import io.schiar.mochannel.model.datasource.service.TVShowsService
-import io.schiar.mochannel.model.datasource.service.local.ServerURLLocalService
-import io.schiar.mochannel.model.datasource.service.local.TVShowsLocalService
+import io.schiar.mochannel.model.datasource.local.ServerURLLocalDataSource
+import io.schiar.mochannel.model.datasource.local.TVShowsLocalDataSource
 import io.schiar.mochannel.model.repository.SettingsRepository
 import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.model.repository.TVShowsRepository
@@ -34,17 +32,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val moChannelDatabase = MoChannelDatabase.getDatabase(context = applicationContext)
         val retrofitAPI = RetrofitAPIHelper.getAPI()
-        val serverURLRoomService = ServerURLRoomService(
+        val serverURLRoomDataSource = ServerURLRoomDataSource(
             serverURLRoomDAO = moChannelDatabase.serverURLRoomDAO()
         )
-        val tvShowsRetrofitService = TVShowsRetrofitService(
+        val tvShowsRetrofitDataSource = TVShowsRetrofitDataSource(
             tvShowsRetrofitAPI = retrofitAPI.create(TVShowsRetrofitAPI::class.java),
-            serverURLService = serverURLRoomService
+            serverURLDataSource = serverURLRoomDataSource
         )
         val (
             settingsRepository, tvShowsRepository, tvShowRepository, videoRepository
         ) = createRepositories(
-            serverURLService = serverURLRoomService, tvShowsService = tvShowsRetrofitService
+            serverURLDataSource = serverURLRoomDataSource,
+            tvShowsDataSource = tvShowsRetrofitDataSource
         )
         val viewModelProvider = ViewModelProvider(
             owner = this,
@@ -69,12 +68,12 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainActivityTVShowsPreview() {
         val previewLocalData = PreviewLocalData()
-        val serverURLLocalService = ServerURLLocalService(serverURL = previewLocalData.serverURL)
-        val tvShowsLocalService = TVShowsLocalService(tvShows = previewLocalData.tvShows)
+        val serverURLLocalService = ServerURLLocalDataSource(serverURL = previewLocalData.serverURL)
+        val tvShowsLocalService = TVShowsLocalDataSource(tvShows = previewLocalData.tvShows)
         val (
             settingsRepository, tvShowsRepository, tvShowRepository, videoRepository
         ) = createRepositories(
-            serverURLService = serverURLLocalService, tvShowsService = tvShowsLocalService
+            serverURLDataSource = serverURLLocalService, tvShowsDataSource = tvShowsLocalService
         )
         AppScreen(
             settingsViewModel = SettingsViewModel(settingsRepository = settingsRepository),
@@ -90,7 +89,7 @@ class MainActivity : ComponentActivity() {
         val (
             settingsRepository, tvShowsRepository, tvShowRepository, videoRepository
         ) = createRepositories(
-            serverURLService = ServerURLLocalService(), tvShowsService = TVShowsLocalService()
+            serverURLDataSource = ServerURLLocalDataSource(), tvShowsDataSource = TVShowsLocalDataSource()
         )
         AppScreen(
             settingsViewModel = SettingsViewModel(settingsRepository = settingsRepository),
@@ -108,21 +107,16 @@ class MainActivity : ComponentActivity() {
     )
 
     private fun createRepositories(
-        serverURLService: ServerURLService, tvShowsService: TVShowsService
+        serverURLDataSource: ServerURLDataSource, tvShowsDataSource: TVShowsDataSource
     ): Repositories {
-        val settingsDataSource = SettingsDataSource(serverURLService = serverURLService)
-        val tvShowDataSource = TVShowsDataSource(tvShowsService = tvShowsService)
         val videoRepository = VideoRepository()
-        val tvShowRepository = TVShowRepository(
-            tvShowsDataSource = tvShowDataSource,
-            currentEpisodeURLsListener = videoRepository
-        )
+        val tvShowRepository = TVShowRepository(currentEpisodeURLsListener = videoRepository)
         val tvShowsRepository = TVShowsRepository(
-            tvShowsDataSource = tvShowDataSource,
+            tvShowsDataSource = tvShowsDataSource,
             currentTVShowChangedListener = tvShowRepository
         )
         val settingsRepository = SettingsRepository(
-            settingsDataSource = settingsDataSource,
+            serverURLDataSource = serverURLDataSource,
             serverURLChangedListener = tvShowsRepository
         )
         return Repositories(

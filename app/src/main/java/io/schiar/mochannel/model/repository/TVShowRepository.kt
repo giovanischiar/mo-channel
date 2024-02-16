@@ -2,16 +2,25 @@ package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentEpisodeURLsListener
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
+import kotlin.properties.Delegates.observable
 
 class TVShowRepository(
-    private val tvShowsDataSource: TVShowsDataSource,
     private val currentEpisodeURLsListener: CurrentEpisodeURLsListener
 ): CurrentTVShowListener {
     private var currentTVShowCallback: ((TVShow) -> Unit)? = null
     private var currentEpisodesFromSeasonCallback: ((List<Episode>) -> Unit)? = null
+    private var currentTVShow: TVShow? by observable(initialValue = null)
+    { _, _, newCurrentTVShow ->
+        if (newCurrentTVShow != null) { (currentTVShowCallback ?: {})(newCurrentTVShow) }
+    }
+    private var currentSeasonEpisodes: List<Episode> by observable(initialValue = emptyList())
+    { _, _, newCurrentSeasonEpisodes ->
+        if (newCurrentSeasonEpisodes.isNotEmpty()) {
+            (currentEpisodesFromSeasonCallback ?: {})(newCurrentSeasonEpisodes)
+        }
+    }
 
     fun subscribeForCurrentTVShow(callback: (tvShow: TVShow) -> Unit) {
         currentTVShowCallback = callback
@@ -21,22 +30,21 @@ class TVShowRepository(
         currentEpisodesFromSeasonCallback = callback
     }
 
-    suspend fun selectEpisodesFromSeasonAt(index: Int) {
-        val currentTVShow = tvShowsDataSource.retrieveCurrentTVShow() ?: return
-        (currentEpisodesFromSeasonCallback ?: {})(
-            currentTVShow.episodesFromSeasonAt(index = index)
+    fun selectEpisodesFromSeasonAt(index: Int) {
+        val currentTVShow = currentTVShow ?: return
+        currentSeasonEpisodes = currentTVShow.episodesFromSeasonAt(index = index)
+    }
+
+    fun urlsOfEpisodesFromIndexOfSeasonAt(index: Int, episodeIndex: Int) {
+        val currentTVShow = currentTVShow ?: return
+        currentEpisodeURLsListener.currentEpisodeURLsChangedTo(
+            newEpisodeURLs = currentTVShow.urlsOfEpisodesFromIndexOfSeasonAt(
+                index = index, episodeIndex = episodeIndex
+            )
         )
     }
 
-    suspend fun urlsOfEpisodesFromIndexOfSeasonAt(index: Int, episodeIndex: Int) {
-        val currentTVShow = tvShowsDataSource.retrieveCurrentTVShow() ?: return
-        val urls = currentTVShow.urlsOfEpisodesFromIndexOfSeasonAt(
-            index = index, episodeIndex = episodeIndex
-        )
-        currentEpisodeURLsListener.onCurrentEpisodeURLsListener(urls = urls)
-    }
-
-    override fun onCurrentTVShow(tvShow: TVShow) {
-        (currentTVShowCallback ?: {})(tvShow)
+    override fun currentTVShowChangedTo(newCurrentTVShow: TVShow) {
+        currentTVShow = newCurrentTVShow
     }
 }

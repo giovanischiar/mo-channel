@@ -1,15 +1,16 @@
 package io.schiar.mochannel.library.retrofit
 
 import io.schiar.mochannel.model.TVShow
-import io.schiar.mochannel.model.datasource.service.ServerURLService
-import io.schiar.mochannel.model.datasource.service.TVShowsService
-import kotlinx.coroutines.runBlocking
+import io.schiar.mochannel.model.datasource.ServerURLDataSource
+import io.schiar.mochannel.model.datasource.TVShowsDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class TVShowsRetrofitService(
+class TVShowsRetrofitDataSource(
     private val tvShowsRetrofitAPI: TVShowsRetrofitAPI,
-    private val serverURLService: ServerURLService
-): TVShowsService {
+    private val serverURLDataSource: ServerURLDataSource
+): TVShowsDataSource {
      private suspend fun getTVShowsFrom(url: String): List<TVShow> = run {
         return (try {
             tvShowsRetrofitAPI.getTVShowsFrom(url = url)
@@ -19,9 +20,7 @@ class TVShowsRetrofitService(
     }
 
     override suspend fun retrieve(): List<TVShow> {
-        val serverURL = serverURLService.retrieve()
-        return getTVShowsFrom(
-            url = serverURL?.toStringWithRoute(route = "tv-shows") ?: ""
-        )
+        val serverURL = withContext(Dispatchers.IO) { serverURLDataSource.retrieve() }
+        return getTVShowsFrom(url = serverURL?.toStringWithRoute(route = "tv-shows") ?: "")
     }
 }

@@ -3,25 +3,32 @@ package io.schiar.mochannel.model.repository
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
-import io.schiar.mochannel.model.repository.listeners.ServerURLChangedListener
+import io.schiar.mochannel.model.repository.listeners.ServerURLChangedOnDataSourceListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class TVShowsRepository(
     private val tvShowsDataSource: TVShowsDataSource,
     private val currentTVShowChangedListener: CurrentTVShowListener
-): ServerURLChangedListener {
+): ServerURLChangedOnDataSourceListener {
+    private var tvShows: List<TVShow>? = null
     private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
 
     fun subscribeForTVShows(callback: (tvShows: List<TVShow>) -> Unit) {
         tvShowsCallback = callback
     }
 
-    override suspend fun onServerUrlChanged() {
-        val tvShows = tvShowsDataSource.retrieveTVShows()
-        tvShowsCallback?.let { it(tvShows) }
+    suspend fun loadTVShows() {
+        tvShows = withContext(Dispatchers.IO) { tvShowsDataSource.retrieve() }
+        (tvShowsCallback ?: {})(tvShows ?: return)
     }
 
-    suspend fun selectTVShowAt(index: Int) {
-        val tvShow = tvShowsDataSource.retrieveTVShowAt(index = index) ?: return
-        currentTVShowChangedListener.onCurrentTVShow(tvShow = tvShow)
+    override suspend fun serverURLChangedOnDataSource(): Unit = coroutineScope { loadTVShows() }
+
+    fun selectTVShowAt(index: Int) {
+        val tvShows = tvShows ?: return
+        val tvShow = tvShows.getOrNull(index = index) ?: return
+        currentTVShowChangedListener.currentTVShowChangedTo(newCurrentTVShow = tvShow)
     }
 }

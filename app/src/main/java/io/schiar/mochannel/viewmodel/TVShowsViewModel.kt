@@ -21,9 +21,8 @@ class TVShowsViewModel(private val tvShowsRepository: TVShowsRepository) : ViewM
 
     init {
         tvShowsRepository.subscribeForTVShows(::onTVShowsChanged)
+        viewModelScope.launch { tvShowsRepository.loadTVShows() }
     }
 
-    fun selectTVShowAt(index: Int) {
-        viewModelScope.launch { tvShowsRepository.selectTVShowAt(index = index) }
-    }
+    fun selectTVShowAt(index: Int) { tvShowsRepository.selectTVShowAt(index = index) }
 }

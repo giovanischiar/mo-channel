@@ -9,7 +9,7 @@ class VideoRepository: CurrentEpisodeURLsListener {
         currentTVShowEpisodeUrlsCallback = callback
     }
 
-    override fun onCurrentEpisodeURLsListener(urls: List<String>) {
-        (currentTVShowEpisodeUrlsCallback ?: {})(urls)
+    override fun currentEpisodeURLsChangedTo(newEpisodeURLs: List<String>) {
+        (currentTVShowEpisodeUrlsCallback ?: {})(newEpisodeURLs)
     }
 }
