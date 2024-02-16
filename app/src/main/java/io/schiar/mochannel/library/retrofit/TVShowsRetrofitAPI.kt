@@ -7,5 +7,5 @@ import retrofit2.http.Url
 
 interface TVShowsRetrofitAPI {
     @GET
-    fun getTVShowsFrom(@Url url: String): Response<List<TVShowJSON>>
+    suspend fun getTVShowsFrom(@Url url: String): Response<List<TVShowJSON>>
 }
