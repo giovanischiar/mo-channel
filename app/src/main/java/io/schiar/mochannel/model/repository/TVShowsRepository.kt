@@ -4,9 +4,6 @@ import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
 import io.schiar.mochannel.model.repository.listeners.ServerURLChangedOnDataSourceListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 
 class TVShowsRepository(
     private val tvShowsDataSource: TVShowsDataSource,
@@ -20,11 +17,11 @@ class TVShowsRepository(
     }
 
     suspend fun loadTVShows() {
-        tvShows = withContext(Dispatchers.IO) { tvShowsDataSource.retrieve() }
+        tvShows = tvShowsDataSource.retrieve()
         (tvShowsCallback ?: {})(tvShows ?: return)
     }
 
-    override suspend fun serverURLChangedOnDataSource(): Unit = coroutineScope { loadTVShows() }
+    override suspend fun serverURLChangedOnDataSource() { loadTVShows() }
 
     fun selectTVShowAt(index: Int) {
         val tvShows = tvShows ?: return
