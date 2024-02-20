@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,14 +13,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.Text
 import io.schiar.mochannel.view.components.SettingsListView
 import io.schiar.mochannel.view.components.SettingsRadioListView
+import io.schiar.mochannel.view.components.TextFieldView
 import io.schiar.mochannel.view.components.TitledView
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
     val serverURL by settingsViewModel.serverURL.collectAsState()
@@ -92,24 +88,20 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                             else -> KeyboardType.Uri
                         }
                         TitledView(title = "URL") {
-                            TextField(
-                                modifier = Modifier.padding(
-                                    start = 50.dp, top = 5.dp, bottom = 5.dp
-                                ),
-                                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                                value = url,
-                                onValueChange = { value ->
+                            TextFieldView(
+                                label = "URL",
+                                text = url,
+                                keyboardType = keyboardType,
+                                onTextChange = { text ->
                                     settingsViewModel.updateURLTo(
                                         newURL = if (options.indexOf(selectedOption) == 0) {
-                                            value
+                                            text
                                                 .replace(oldValue = ",", newValue = "")
                                                 .replace(oldValue = "-", newValue = "")
                                                 .replace(oldValue = " ", newValue = "")
-                                        } else { value }
+                                        } else { text }
                                     )
-                                },
-                                label = { Text("URL") },
-                                singleLine = true
+                                }
                             )
 
                             SettingsRadioListView(
@@ -121,17 +113,12 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                     }
 
                     "Port" -> {
-                        val keyboardType = KeyboardType.Number
                         TitledView(title = "Port") {
-                            TextField(
-                                modifier = Modifier.padding(
-                                    start = 50.dp, top = 5.dp, bottom = 5.dp
-                                ),
-                                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                                value = port,
-                                onValueChange = settingsViewModel::updatePortTo,
-                                label = { Text("Port") },
-                                singleLine = true
+                            TextFieldView(
+                                label = "Port",
+                                text = port,
+                                keyboardType = KeyboardType.Number,
+                                onTextChange = settingsViewModel::updatePortTo
                             )
                         }
                     }
