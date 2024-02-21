@@ -5,18 +5,13 @@ import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
 class TVShowsRetrofitDataSource(
     private val tvShowsRetrofitAPI: TVShowsRetrofitAPI,
     private val serverURLDataSource: ServerURLDataSource
 ): TVShowsDataSource {
      private suspend fun getTVShowsFrom(url: String): List<TVShow> = run {
-        return (try {
-            tvShowsRetrofitAPI.getTVShowsFrom(url = url)
-        } catch (exception: Exception) {
-            Response.success(emptyList())
-        }.body() ?: emptyList()).toTVShows()
+        return tvShowsRetrofitAPI.getTVShowsFrom(url = url).body()?.toTVShows() ?: emptyList()
     }
 
     override suspend fun retrieve(): List<TVShow> {

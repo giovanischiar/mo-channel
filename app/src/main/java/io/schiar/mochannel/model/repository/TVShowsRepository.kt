@@ -17,7 +17,11 @@ class TVShowsRepository(
     }
 
     suspend fun loadTVShows() {
-        tvShows = tvShowsDataSource.retrieve()
+        tvShows = try {
+            tvShowsDataSource.retrieve()
+        } catch (exception: Exception) {
+            tvShows
+        }
         (tvShowsCallback ?: {})(tvShows ?: return)
     }
 
