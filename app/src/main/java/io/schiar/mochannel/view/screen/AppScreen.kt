@@ -22,10 +22,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import io.schiar.mochannel.R
+import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
 import io.schiar.mochannel.viewmodel.VideoViewModel
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -37,10 +40,10 @@ fun AppScreen(
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val serverURL by settingsViewModel.serverURL.collectAsState()
+    val serverURL by settingsViewModel.serverURL.collectAsState(initial = ServerURLViewData())
     LaunchedEffect(serverURL) {
-        val serverURLFullURL = (serverURL ?: return@LaunchedEffect).fullURL
-        val isServerURLValid = Patterns.WEB_URL.matcher(serverURLFullURL).matches()
+        val (fullURL) = settingsViewModel.serverURL.drop(count = 1).first()
+        val isServerURLValid = Patterns.WEB_URL.matcher(fullURL).matches()
         if (!isServerURLValid && navBackStackEntry?.destination?.route != "Settings") {
             navController.navigate("Settings")
         }

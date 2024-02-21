@@ -4,71 +4,48 @@ import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.local.ServerURLLocalDataSource
 import io.schiar.mochannel.model.repository.listeners.ServerURLChangedOnDataSourceListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.properties.Delegates.observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
 
 class SettingsRepository(
     private val serverURLDataSource: ServerURLDataSource = ServerURLLocalDataSource(),
-    private val serverURLChangedListener: ServerURLChangedOnDataSourceListener
+    private val serverURLChangedOnDataSourceListener: ServerURLChangedOnDataSourceListener
 ) {
-    private var serverURLsCallback: ((ServerURL) -> Unit)? = null
-    private var serverURL: ServerURL? by observable(initialValue = null) { _, _, newServerURL ->
-        (serverURLsCallback ?: {})(newServerURL ?: return@observable)
-    }
-
-    private suspend fun createServerURLAtDataSource() = coroutineScope { 
-        launch(Dispatchers.IO) {
-            withContext(this.coroutineContext) {
-                serverURLDataSource.create(serverURL = serverURL ?: return@withContext)
-            }
-            serverURLChangedListener.serverURLChangedOnDataSource()
-        }
-    }
-
-    private suspend fun retrieveServerURLOrCreateAtDataSource(): ServerURL? {
-        if (serverURL == null) {
-            serverURL = withContext(Dispatchers.IO) { serverURLDataSource.retrieve() }
-            if (serverURL == null) {
-                serverURL = ServerURL()
-                createServerURLAtDataSource()
+    private var dirty: Boolean = false
+    private var _serverURL = ServerURL()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val serverURL = serverURLDataSource.retrieve()
+        .distinctUntilChanged()
+        .mapLatest { serverURLFromDataSource ->
+            if (serverURLFromDataSource == null) {
+                serverURLDataSource.create(_serverURL)
+                _serverURL
+            } else {
+                _serverURL = serverURLFromDataSource
+                serverURLFromDataSource
             }
         }
-        return serverURL
-    }
-
-    private suspend fun updateServerURLAtDataSource() = coroutineScope {
-        launch(Dispatchers.IO) {
-            withContext(this.coroutineContext) {
-                serverURLDataSource.update(serverURL = serverURL ?: return@withContext)
-            }
-            serverURLChangedListener.serverURLChangedOnDataSource()
-        }
-    }
-
-    private suspend fun updateServerURLAtDataSourceTo(newServerURL: ServerURL) {
-        serverURL = newServerURL
-        updateServerURLAtDataSource()
-    }
-
-    fun subscribeForServerURLs(callback: (ServerURL) -> Unit) { serverURLsCallback = callback }
 
     suspend fun updatePrefixTo(newPrefix: String) {
-        val serverURL = serverURL ?: return
-        updateServerURLAtDataSourceTo(newServerURL = serverURL.prefixUpdatedTo(newPrefix = newPrefix))
+        serverURLDataSource.update(_serverURL.prefixUpdatedTo(newPrefix = newPrefix))
+        dirty = true
     }
 
     suspend fun updateURLTo(newURL: String) {
-        val serverURL = serverURL ?: return
-        updateServerURLAtDataSourceTo(newServerURL = serverURL.urlUpdatedTo(newURL = newURL))
+        serverURLDataSource.update(_serverURL.urlUpdatedTo(newURL = newURL))
+        dirty = true
     }
 
     suspend fun updatePortTo(newPort: String) {
-        val serverURL = serverURL ?: return
-        updateServerURLAtDataSourceTo(newServerURL = serverURL.portUpdatedTo(newPort = newPort))
+        serverURLDataSource.update(_serverURL.portUpdatedTo(newPort = newPort))
+        dirty = true
     }
 
-    suspend fun loadServerURL() { retrieveServerURLOrCreateAtDataSource() }
+    suspend fun serverURLChanged() {
+        if (dirty) {
+            serverURLChangedOnDataSourceListener.serverURLChangedOnDataSource()
+            dirty = false
+        }
+    }
 }

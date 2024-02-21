@@ -2,6 +2,8 @@ package io.schiar.mochannel.library.room
 
 import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ServerURLRoomDataSource(
     private val serverURLRoomDAO: ServerURLRoomDAO
@@ -10,8 +12,8 @@ class ServerURLRoomDataSource(
         serverURLRoomDAO.insert(serverURLEntity = serverURL.toServerURLEntity())
     }
 
-    override suspend fun retrieve(): ServerURL? {
-        return serverURLRoomDAO.select()?.toServerURL()
+    override fun retrieve(): Flow<ServerURL?> {
+        return serverURLRoomDAO.select().map { it?.toServerURL() }
     }
 
     override suspend fun update(serverURL: ServerURL) {

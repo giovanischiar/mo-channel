@@ -17,22 +17,22 @@ import io.schiar.mochannel.view.components.SettingsListView
 import io.schiar.mochannel.view.components.SettingsRadioListView
 import io.schiar.mochannel.view.components.TextFieldView
 import io.schiar.mochannel.view.components.TitledView
+import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
-    val serverURL by settingsViewModel.serverURL.collectAsState()
-    val fullURL = serverURL?.fullURL ?: return
-    val prefix = serverURL?.prefix ?: return
-    val url = serverURL?.url ?: return
-    val port = serverURL?.port ?: return
+    val serverURL by settingsViewModel.serverURL.collectAsState(initial = ServerURLViewData())
+    val (fullURL, prefix, url, port) = serverURL
 
     var isServerURLFocused by remember { mutableStateOf(value = false) }
     var isServerURLMenuFocused by remember { mutableStateOf(value = false) }
     var isServerURLMenuEditFocused by remember { mutableStateOf(value = false) }
     var optionFocused by remember { mutableStateOf("Prefix") }
 
-    Row(modifier = Modifier.fillMaxHeight().padding(top = 50.dp, bottom = 50.dp, end = 50.dp)) {
+    Row(modifier = Modifier
+        .fillMaxHeight()
+        .padding(top = 50.dp, bottom = 50.dp, end = 50.dp)) {
         TitledView(modifier = Modifier.weight(1f), title = "Settings") {
             SettingsListView(
                 labelValue = listOf(Pair("Server URL", fullURL)),
@@ -87,21 +87,13 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                             0 -> KeyboardType.Number
                             else -> KeyboardType.Uri
                         }
+
                         TitledView(title = "URL") {
                             TextFieldView(
                                 label = "URL",
                                 text = url,
+                                onTextChange = settingsViewModel::updateURLTo,
                                 keyboardType = keyboardType,
-                                onTextChange = { text ->
-                                    settingsViewModel.updateURLTo(
-                                        newURL = if (options.indexOf(selectedOption) == 0) {
-                                            text
-                                                .replace(oldValue = ",", newValue = "")
-                                                .replace(oldValue = "-", newValue = "")
-                                                .replace(oldValue = " ", newValue = "")
-                                        } else { text }
-                                    )
-                                }
                             )
 
                             SettingsRadioListView(

@@ -5,15 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ServerURLRoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(serverURLEntity: ServerURLEntity): Long
+    suspend fun insert(serverURLEntity: ServerURLEntity): Long
 
     @Update
-    fun update(serverURLEntity: ServerURLEntity)
+    suspend fun update(serverURLEntity: ServerURLEntity)
 
     @Query("SELECT * FROM ServerURL LIMIT 1")
-    fun select(): ServerURLEntity?
+    fun select(): Flow<ServerURLEntity?>
 }

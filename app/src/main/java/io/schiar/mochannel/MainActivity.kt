@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
         )
         val settingsRepository = SettingsRepository(
             serverURLDataSource = serverURLDataSource,
-            serverURLChangedListener = tvShowsRepository
+            serverURLChangedOnDataSourceListener = tvShowsRepository
         )
         return Repositories(
             settingsRepository = settingsRepository,

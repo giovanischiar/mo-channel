@@ -3,8 +3,7 @@ package io.schiar.mochannel.library.retrofit
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 
 class TVShowsRetrofitDataSource(
     private val tvShowsRetrofitAPI: TVShowsRetrofitAPI,
@@ -15,7 +14,7 @@ class TVShowsRetrofitDataSource(
     }
 
     override suspend fun retrieve(): List<TVShow> {
-        val serverURL = withContext(Dispatchers.IO) { serverURLDataSource.retrieve() }
+        val serverURL = serverURLDataSource.retrieve().first()
         return getTVShowsFrom(url = serverURL?.toStringWithRoute(route = "tv-shows") ?: "")
     }
 }
