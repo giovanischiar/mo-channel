@@ -15,6 +15,10 @@ fun TVShow.toViewData(): TVShowViewData {
     return TVShowViewData(name = name, seasonTitles = seasonTitles)
 }
 
+fun List<TVShow>.toViewDataList(): List<TVShowViewData> {
+    return map { it.toViewData() }
+}
+
 fun ServerURL.toViewData(): ServerURLViewData {
     return ServerURLViewData(fullURL = toString(), prefix = prefix, url = url, port = port)
 }

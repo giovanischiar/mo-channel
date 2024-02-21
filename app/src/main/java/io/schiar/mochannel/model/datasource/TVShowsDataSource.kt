@@ -1,7 +1,8 @@
 package io.schiar.mochannel.model.datasource
 
 import io.schiar.mochannel.model.TVShow
+import kotlinx.coroutines.flow.Flow
 
 interface TVShowsDataSource {
-    suspend fun retrieve(): List<TVShow>
+    fun retrieve(): Flow<List<TVShow>>
 }

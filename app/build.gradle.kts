@@ -83,7 +83,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
     // General compose dependencies
-    val composeBom = platform("androidx.compose:compose-bom:2024.01.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.compose.ui:ui-tooling-preview")

@@ -3,33 +3,21 @@ package io.schiar.mochannel.model.repository
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
-import io.schiar.mochannel.model.repository.listeners.ServerURLChangedOnDataSourceListener
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onEach
 
 class TVShowsRepository(
-    private val tvShowsDataSource: TVShowsDataSource,
+    tvShowsDataSource: TVShowsDataSource,
     private val currentTVShowChangedListener: CurrentTVShowListener
-): ServerURLChangedOnDataSourceListener {
-    private var tvShows: List<TVShow>? = null
-    private var tvShowsCallback: ((List<TVShow>) -> Unit)? = null
+) {
+    private var _tvShows: List<TVShow> = emptyList()
 
-    fun subscribeForTVShows(callback: (tvShows: List<TVShow>) -> Unit) {
-        tvShowsCallback = callback
-    }
-
-    suspend fun loadTVShows() {
-        tvShows = try {
-            tvShowsDataSource.retrieve()
-        } catch (exception: Exception) {
-            tvShows
-        }
-        (tvShowsCallback ?: {})(tvShows ?: return)
-    }
-
-    override suspend fun serverURLChangedOnDataSource() { loadTVShows() }
+    val tvShows = tvShowsDataSource.retrieve()
+        .onEach { if (it.isNotEmpty()) { _tvShows = it  }}
+        .catch { emit(_tvShows); throw it }
 
     fun selectTVShowAt(index: Int) {
-        val tvShows = tvShows ?: return
-        val tvShow = tvShows.getOrNull(index = index) ?: return
+        val tvShow = _tvShows.getOrNull(index = index) ?: return
         currentTVShowChangedListener.currentTVShowChangedTo(newCurrentTVShow = tvShow)
     }
 }

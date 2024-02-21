@@ -1,28 +1,33 @@
 package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.repository.TVShowsRepository
-import io.schiar.mochannel.view.viewdata.TVShowViewData
-import io.schiar.mochannel.viewmodel.util.toViewData
+import io.schiar.mochannel.viewmodel.util.toViewDataList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class TVShowsViewModel(private val tvShowsRepository: TVShowsRepository) : ViewModel() {
-    private val _tvShows = MutableStateFlow<List<TVShowViewData>>(emptyList())
-    val tvShows: StateFlow<List<TVShowViewData>> = _tvShows
+    val tvShows = tvShowsRepository.tvShows
+        .onStart { _loading.update { true } }
+        .onEach { cleanLoading() }
+        .map { it.toViewDataList() }
+        .catch { catchException(it) }
+    private val _loading = MutableStateFlow(value = false)
+    val loading: StateFlow<Boolean> = _loading
+    private val _errorMessage = MutableStateFlow(value = "")
+    val errorMessage: StateFlow<String> = _errorMessage
 
-    private fun onTVShowsChanged(tvShows: List<TVShow>) {
-        _tvShows.update { tvShows.map { tvShow -> tvShow.toViewData() } }
-    }
-
-    init {
-        tvShowsRepository.subscribeForTVShows(::onTVShowsChanged)
-        viewModelScope.launch { tvShowsRepository.loadTVShows() }
-    }
-
+    fun cleanErrorMessage() { _errorMessage.update { "" } }
     fun selectTVShowAt(index: Int) { tvShowsRepository.selectTVShowAt(index = index) }
+
+    private fun cleanLoading() { _loading.update { false } }
+    private fun catchException(throwable: Throwable) {
+        cleanLoading()
+        _errorMessage.update { throwable.message ?: "" }
+    }
 }

@@ -21,8 +21,4 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository): Vie
     fun updatePortTo(newPort: String) = viewModelScope.launch {
         settingsRepository.updatePortTo(newPort = newPort)
     }
-
-    fun submitServerURL() = viewModelScope.launch {
-        settingsRepository.serverURLChanged()
-    }
 }
