@@ -42,61 +42,77 @@ android {
 }
 
 dependencies {
+    // androidx
+    implementation("androidx.annotation:annotation-experimental:1.4.0")
+    implementation("androidx.annotation:annotation:1.7.1")
+    //noinspection KtxExtensionAvailable
+    implementation("androidx.activity:activity:1.8.2")
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.leanback:leanback:1.0.0")
-    implementation("androidx.compose.material3:material3:1.1.2")
+    // Material 3
+    implementation("androidx.compose.material3:material3-android:1.2.0")
 
-    // ExoPlayer
+    // ExoPlayer Media
     val mediaVersion = "1.2.1"
     implementation("androidx.media3:media3-exoplayer:$mediaVersion")
-    implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
-
-    // Media
+    implementation("androidx.media3:media3-common:$mediaVersion")
     implementation("androidx.media3:media3-ui:$mediaVersion")
 
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    //noinspection KtxExtensionAvailable
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
-    // Gson
+    // Retrofit with Gson
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    val navVersion = "2.7.6"
+    // Gson
+    implementation("com.google.code.gson:gson:2.10")
 
-    // Kotlin
-    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    // Guava
+    implementation("com.google.guava:guava:31.1-jre")
 
-    // Feature module Support
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+    // Navigation
+    val navigationVersion = "2.7.7"
+    //noinspection KtxExtensionAvailable
+    implementation("androidx.navigation:navigation-runtime:$navigationVersion")
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
+    implementation("androidx.navigation:navigation-common:$navigationVersion")
 
-    // Testing Navigation
-    androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
-
-    // Jetpack Compose Integration
-    implementation("androidx.navigation:navigation-compose:$navVersion")
-
-    // General compose dependencies
-    val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
-    implementation(composeBom)
+    // Compose
+    val composeVersion = "1.6.2"
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.animation:animation:$composeVersion")
+    implementation("androidx.compose.foundation:foundation-layout:$composeVersion")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+    implementation("androidx.compose.runtime:runtime:$composeVersion")
+    implementation("androidx.compose.ui:ui-graphics:$composeVersion")
+    implementation("androidx.compose.ui:ui-text:$composeVersion")
+    implementation("androidx.compose.ui:ui-unit:$composeVersion")
+    implementation("androidx.compose.ui:ui:$composeVersion")
 
-    // Compose for TV dependencies
-    val tvCompose = "1.0.0-alpha10"
-    implementation("androidx.tv:tv-foundation:$tvCompose")
-    implementation("androidx.tv:tv-material:$tvCompose")
+    // Compose Preview
+    implementation("androidx.compose.ui:ui-tooling-preview-android:$composeVersion")
+
+    // Compose for TV
+    implementation("androidx.tv:tv-material:1.0.0-alpha10")
+    implementation("androidx.tv:tv-foundation:1.0.0-alpha10")
 
     // Room for database persistence
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-common:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    // SQLite
+    //noinspection KtxExtensionAvailable
+    implementation("androidx.sqlite:sqlite:2.4.0")
 }
