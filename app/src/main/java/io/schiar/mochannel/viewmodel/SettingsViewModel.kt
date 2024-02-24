@@ -2,12 +2,17 @@ package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.repository.SettingsRepository
 import io.schiar.mochannel.viewmodel.util.toViewData
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(private val settingsRepository: SettingsRepository): ViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val settingsRepository: SettingsRepository
+): ViewModel() {
     val serverURL = settingsRepository.serverURL.map { it.toViewData() }
 
     fun updatePrefixTo(newPrefix: String) = viewModelScope.launch {

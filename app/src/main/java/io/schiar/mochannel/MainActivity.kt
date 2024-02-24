@@ -3,15 +3,11 @@ package io.schiar.mochannel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import io.schiar.mochannel.library.local.PreviewLocalData
-import io.schiar.mochannel.library.retrofit.RetrofitAPIHelper
-import io.schiar.mochannel.library.retrofit.TVShowsRetrofitAPI
-import io.schiar.mochannel.library.retrofit.TVShowsRetrofitDataSource
-import io.schiar.mochannel.library.room.MoChannelDatabase
-import io.schiar.mochannel.library.room.ServerURLRoomDataSource
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.datasource.local.ServerURLLocalDataSource
@@ -25,41 +21,22 @@ import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
 import io.schiar.mochannel.viewmodel.VideoViewModel
-import io.schiar.mochannel.viewmodel.util.ViewModelFactory
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val settingsViewModel: SettingsViewModel by viewModels()
+    private val tvShowsViewModel: TVShowsViewModel by viewModels()
+    private val tvShowViewModel: TVShowViewModel by viewModels()
+    private val videoViewModel: VideoViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val moChannelDatabase = MoChannelDatabase.getDatabase(context = applicationContext)
-        val retrofitAPI = RetrofitAPIHelper.getAPI()
-        val serverURLRoomDataSource = ServerURLRoomDataSource(
-            serverURLRoomDAO = moChannelDatabase.serverURLRoomDAO()
-        )
-        val tvShowsRetrofitDataSource = TVShowsRetrofitDataSource(
-            tvShowsRetrofitAPI = retrofitAPI.create(TVShowsRetrofitAPI::class.java),
-            serverURLDataSource = serverURLRoomDataSource
-        )
-        val (
-            settingsRepository, tvShowsRepository, tvShowRepository, videoRepository
-        ) = createRepositories(
-            serverURLDataSource = serverURLRoomDataSource,
-            tvShowsDataSource = tvShowsRetrofitDataSource
-        )
-        val viewModelProvider = ViewModelProvider(
-            owner = this,
-            factory = ViewModelFactory(
-                settingsRepository = settingsRepository,
-                tvShowsRepository = tvShowsRepository,
-                tvShowRepository = tvShowRepository,
-                videoRepository = videoRepository
-            )
-        )
         setContent {
             AppScreen(
-                settingsViewModel = viewModelProvider[SettingsViewModel::class.java],
-                tvShowsViewModel = viewModelProvider[TVShowsViewModel::class.java],
-                tvShowViewModel = viewModelProvider[TVShowViewModel::class.java],
-                videoViewModel =  viewModelProvider[VideoViewModel::class.java]
+                settingsViewModel = settingsViewModel,
+                tvShowsViewModel = tvShowsViewModel,
+                tvShowViewModel = tvShowViewModel,
+                videoViewModel = videoViewModel
             )
         }
     }

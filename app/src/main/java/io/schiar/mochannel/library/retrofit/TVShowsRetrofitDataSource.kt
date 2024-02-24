@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class TVShowsRetrofitDataSource(
+class TVShowsRetrofitDataSource @Inject constructor(
     private val tvShowsRetrofitAPI: TVShowsRetrofitAPI,
     serverURLDataSource: ServerURLDataSource
 ): TVShowsDataSource {

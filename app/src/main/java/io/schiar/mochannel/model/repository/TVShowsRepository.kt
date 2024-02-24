@@ -5,8 +5,9 @@ import io.schiar.mochannel.model.datasource.TVShowsDataSource
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class TVShowsRepository(
+class TVShowsRepository @Inject constructor(
     tvShowsDataSource: TVShowsDataSource,
     private val currentTVShowChangedListener: CurrentTVShowListener
 ) {

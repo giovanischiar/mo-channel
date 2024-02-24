@@ -4,8 +4,9 @@ import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class ServerURLRoomDataSource(
+class ServerURLRoomDataSource @Inject constructor(
     private val serverURLRoomDAO: ServerURLRoomDAO
 ): ServerURLDataSource {
     override suspend fun create(serverURL: ServerURL) {

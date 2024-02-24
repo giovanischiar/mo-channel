@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,10 +34,10 @@ import kotlinx.coroutines.flow.first
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun AppScreen(
-    settingsViewModel: SettingsViewModel,
-    tvShowsViewModel: TVShowsViewModel,
-    tvShowViewModel: TVShowViewModel,
-    videoViewModel: VideoViewModel,
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
+    tvShowsViewModel: TVShowsViewModel = hiltViewModel(),
+    tvShowViewModel: TVShowViewModel = hiltViewModel(),
+    videoViewModel: VideoViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()

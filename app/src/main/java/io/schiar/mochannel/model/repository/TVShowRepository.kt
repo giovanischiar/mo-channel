@@ -4,9 +4,10 @@ import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.repository.listeners.CurrentEpisodeURLsListener
 import io.schiar.mochannel.model.repository.listeners.CurrentTVShowListener
+import javax.inject.Inject
 import kotlin.properties.Delegates.observable
 
-class TVShowRepository(
+class TVShowRepository @Inject constructor(
     private val currentEpisodeURLsListener: CurrentEpisodeURLsListener
 ): CurrentTVShowListener {
     private var currentTVShowCallback: ((TVShow) -> Unit)? = null

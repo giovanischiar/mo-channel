@@ -1,6 +1,7 @@
 package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.repository.TVShowsRepository
 import io.schiar.mochannel.viewmodel.util.toViewDataList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,8 +11,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class TVShowsViewModel(private val tvShowsRepository: TVShowsRepository) : ViewModel() {
+@HiltViewModel
+class TVShowsViewModel @Inject constructor(
+    private val tvShowsRepository: TVShowsRepository
+) : ViewModel() {
     val tvShows = tvShowsRepository.tvShows
         .onStart { _loading.update { true } }
         .onEach { cleanLoading() }

@@ -2,6 +2,7 @@ package io.schiar.mochannel.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.Episode
 import io.schiar.mochannel.model.TVShow
 import io.schiar.mochannel.model.repository.TVShowRepository
@@ -12,8 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TVShowViewModel(private val tvShowRepository: TVShowRepository) : ViewModel() {
+@HiltViewModel
+class TVShowViewModel @Inject constructor(
+    private val tvShowRepository: TVShowRepository
+) : ViewModel() {
     private val _currentTVShow = MutableStateFlow<TVShowViewData?>(value = null)
     val currentTVShow: StateFlow<TVShowViewData?> = _currentTVShow
     private val _currentEpisodesFromSeason = MutableStateFlow<List<EpisodeViewData>>(

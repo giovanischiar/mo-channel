@@ -2,13 +2,13 @@ package io.schiar.mochannel.model.repository
 
 import io.schiar.mochannel.model.ServerURL
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
-import io.schiar.mochannel.model.datasource.local.ServerURLLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
+import javax.inject.Inject
 
-class SettingsRepository(
-    private val serverURLDataSource: ServerURLDataSource = ServerURLLocalDataSource()
+class SettingsRepository @Inject constructor(
+    private val serverURLDataSource: ServerURLDataSource
 ) {
     private var _serverURL = ServerURL()
     @OptIn(ExperimentalCoroutinesApi::class)
