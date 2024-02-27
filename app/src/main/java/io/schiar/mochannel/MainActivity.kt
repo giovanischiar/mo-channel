@@ -146,23 +146,19 @@ class MainActivity : ComponentActivity() {
     ): Repositories {
         val currentTVShowDataSource = CurrentTVShowLocalDataSource()
         val currentEpisodeURLsDataSource = CurrentEpisodeURLsLocalDataSource()
-        val videoRepository = VideoRepository(
-            currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
-        )
-        val tvShowRepository = TVShowRepository(
-            currentTVShowDataSource = currentTVShowDataSource,
-            currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
-        )
-        val tvShowsRepository = TVShowsRepository(
-            tvShowsDataSource = tvShowsDataSource,
-            currentTVShowDataSource = currentTVShowDataSource
-        )
-        val settingsRepository = SettingsRepository(serverURLDataSource = serverURLDataSource)
         return Repositories(
-            settingsRepository = settingsRepository,
-            tvShowsRepository = tvShowsRepository,
-            tvShowRepository = tvShowRepository,
-            videoRepository = videoRepository
+            settingsRepository = SettingsRepository(serverURLDataSource = serverURLDataSource),
+            tvShowsRepository = TVShowsRepository(
+                tvShowsDataSource = tvShowsDataSource,
+                currentTVShowDataSource = currentTVShowDataSource
+            ),
+            tvShowRepository = TVShowRepository(
+                currentTVShowDataSource = currentTVShowDataSource,
+                currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
+            ),
+            videoRepository = VideoRepository(
+                currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
+            )
         )
     }
 
