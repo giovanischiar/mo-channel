@@ -44,7 +44,7 @@ fun VideoScreen(videoViewModel: VideoViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val exoPlayer = remember { ExoPlayer.Builder(context).build().apply { prepare() } }
 
-    val urls by videoViewModel.urls.collectAsState()
+    val urls by videoViewModel.urls.collectAsState(initial = emptyList())
     var backHandlerEnabled by remember { mutableStateOf(value = true) }
 
     LaunchedEffect(urls) {

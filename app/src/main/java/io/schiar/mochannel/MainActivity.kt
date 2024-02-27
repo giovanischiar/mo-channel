@@ -10,6 +10,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.schiar.mochannel.library.local.PreviewLocalData
 import io.schiar.mochannel.model.datasource.ServerURLDataSource
 import io.schiar.mochannel.model.datasource.TVShowsDataSource
+import io.schiar.mochannel.model.datasource.local.CurrentEpisodeURLsLocalDataSource
+import io.schiar.mochannel.model.datasource.local.CurrentTVShowLocalDataSource
 import io.schiar.mochannel.model.datasource.local.ServerURLLocalDataSource
 import io.schiar.mochannel.model.datasource.local.TVShowsLocalDataSource
 import io.schiar.mochannel.model.repository.SettingsRepository
@@ -86,11 +88,18 @@ class MainActivity : ComponentActivity() {
     private fun createRepositories(
         serverURLDataSource: ServerURLDataSource, tvShowsDataSource: TVShowsDataSource
     ): Repositories {
-        val videoRepository = VideoRepository()
-        val tvShowRepository = TVShowRepository(currentEpisodeURLsListener = videoRepository)
+        val currentTVShowDataSource = CurrentTVShowLocalDataSource()
+        val currentEpisodeURLsDataSource = CurrentEpisodeURLsLocalDataSource()
+        val videoRepository = VideoRepository(
+            currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
+        )
+        val tvShowRepository = TVShowRepository(
+            currentTVShowDataSource = currentTVShowDataSource,
+            currentEpisodeURLsDataSource = currentEpisodeURLsDataSource
+        )
         val tvShowsRepository = TVShowsRepository(
             tvShowsDataSource = tvShowsDataSource,
-            currentTVShowChangedListener = tvShowRepository
+            currentTVShowDataSource = currentTVShowDataSource
         )
         val settingsRepository = SettingsRepository(serverURLDataSource = serverURLDataSource)
         return Repositories(

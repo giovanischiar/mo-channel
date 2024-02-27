@@ -18,8 +18,10 @@ import io.schiar.mochannel.viewmodel.TVShowViewModel
 
 @Composable
 fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = {}) {
-    val currentTVShow by tvShowViewModel.currentTVShow.collectAsState()
-    val currentEpisodesFromSeason by tvShowViewModel.currentEpisodesFromSeason.collectAsState()
+    val currentTVShow by tvShowViewModel.currentTVShow.collectAsState(initial = null)
+    val currentEpisodesFromSeason by tvShowViewModel.currentEpisodesFromSeason.collectAsState(
+        initial = emptyList()
+    )
     (currentTVShow ?: return).name
     var currentSeasonIndex by remember { mutableIntStateOf(value = 0) }
     val seasonTitles = (currentTVShow ?: return).seasonTitles
