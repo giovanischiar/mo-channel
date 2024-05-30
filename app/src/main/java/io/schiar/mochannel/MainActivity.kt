@@ -34,6 +34,7 @@ import io.schiar.mochannel.view.screen.SettingsScreen
 import io.schiar.mochannel.view.screen.TVShowScreen
 import io.schiar.mochannel.view.screen.TVShowsScreen
 import io.schiar.mochannel.view.screen.VideoScreen
+import io.schiar.mochannel.view.uistate.TVShowsUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
@@ -82,8 +83,13 @@ class MainActivity : ComponentActivity() {
                     SettingsScreen(settingsViewModel = settingsViewModel)
                 }
                 composable(route = "TVShows") {
+                    val tvShowsUiState by tvShowsViewModel
+                        .tvShowsUiStateFlow
+                        .collectAsState(initial = TVShowsUiState.Loading)
+
                     TVShowsScreen(
-                        tvShowsViewModel = tvShowsViewModel,
+                        tvShowsUiState = tvShowsUiState,
+                        selectTVShowAt = tvShowsViewModel::selectTVShowAt,
                         onSettingsPressed = { navController.navigate(route = "Settings") },
                         onTVShowPressed = { navController.navigate(route = "TVShow") }
                     )

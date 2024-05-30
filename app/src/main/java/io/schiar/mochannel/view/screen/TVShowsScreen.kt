@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,35 +18,40 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import io.schiar.mochannel.R
 import io.schiar.mochannel.view.components.ListView
-import io.schiar.mochannel.viewmodel.TVShowsViewModel
+import io.schiar.mochannel.view.uistate.TVShowsUiState
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TVShowsScreen(
-    tvShowsViewModel: TVShowsViewModel,
+    tvShowsUiState: TVShowsUiState,
+    selectTVShowAt: (index: Int) -> Unit,
     onSettingsPressed: () -> Unit = {},
     onTVShowPressed: () -> Unit = {}
 ) {
-    val tvShows by tvShowsViewModel.tvShows.collectAsState(initial = emptyList())
-    val loading by tvShowsViewModel.loading.collectAsState()
-    val errorResponse by tvShowsViewModel.errorMessage.collectAsState()
-    if (errorResponse.isNotEmpty()) {
-        Toast.makeText(LocalContext.current, errorResponse, Toast.LENGTH_SHORT).show()
-        tvShowsViewModel.cleanErrorMessage()
+    val tvShows = when (tvShowsUiState) {
+        is TVShowsUiState.TVShowsLoaded -> tvShowsUiState.tvShows
+        else -> emptyList()
     }
+
+    if (tvShowsUiState is TVShowsUiState.Error) {
+        Toast.makeText(LocalContext.current, tvShowsUiState.message, Toast.LENGTH_SHORT).show()
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier
-            .fillMaxHeight()
-            .padding(top = 104.dp), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxHeight().padding(top = 104.dp),
+            contentAlignment = Alignment.Center
+        ) {
             ListView(
                 buttonTitles = tvShows.map { it.name },
                 onButtonPressedAt = { index ->
-                    tvShowsViewModel.selectTVShowAt(index = index)
+                    selectTVShowAt(index)
                     onTVShowPressed()
                 }
             )
         }
-        if (loading) {
+
+        if (tvShowsUiState is TVShowsUiState.Loading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
