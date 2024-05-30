@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -14,18 +13,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.schiar.mochannel.view.components.ListView
-import io.schiar.mochannel.viewmodel.TVShowViewModel
+import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
+import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
 
 @Composable
-fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = {}) {
-    val currentTVShow by tvShowViewModel.currentTVShow.collectAsState(initial = null)
-    val currentEpisodesFromSeason by tvShowViewModel.currentEpisodesFromSeason.collectAsState(
-        initial = emptyList()
-    )
-    (currentTVShow ?: return).name
+fun TVShowScreen(
+    currentTVShowUiState: CurrentTVShowUiState,
+    currentEpisodesFromSeasonUiState: CurrentEpisodesFromSeasonUiState,
+    selectEpisodesFromSeasonAt: (index: Int) -> Unit,
+    selectEpisodeOnIndexFromSeasonAt: (index: Int, episodeIndex: Int) -> Unit,
+    onVideoPressed: () -> Unit = {}
+) {
+    val currentTVShow = when (currentTVShowUiState) {
+        is CurrentTVShowUiState.Loading -> null
+        is CurrentTVShowUiState.CurrentTVShowLoaded -> currentTVShowUiState.tvShow
+    }
+
+    val currentEpisodesFromSeason = when(currentEpisodesFromSeasonUiState) {
+        is CurrentEpisodesFromSeasonUiState.Loading -> emptyList()
+        is CurrentEpisodesFromSeasonUiState.CurrentEpisodesFromSeasonLoaded -> {
+            currentEpisodesFromSeasonUiState.episodes
+        }
+    }
+
     var currentSeasonIndex by remember { mutableIntStateOf(value = 0) }
     val seasonTitles = (currentTVShow ?: return).seasonTitles
-    LaunchedEffect(Unit) { tvShowViewModel.selectEpisodesFromSeasonAt(index = currentSeasonIndex) }
+    LaunchedEffect(Unit) { selectEpisodesFromSeasonAt(currentSeasonIndex) }
     Row {
         if (seasonTitles.size > 1) {
             Box(
@@ -36,11 +49,11 @@ fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = 
                     modifier = Modifier.fillMaxWidth(),
                     buttonTitles = seasonTitles,
                     onButtonFocusedAt = { index ->
-                        tvShowViewModel.selectEpisodesFromSeasonAt(index = index)
+                        selectEpisodesFromSeasonAt(index)
                         currentSeasonIndex = index
                     },
                     onButtonPressedAt = { index ->
-                        tvShowViewModel.selectEpisodesFromSeasonAt(index = index)
+                        selectEpisodesFromSeasonAt(index)
                         currentSeasonIndex = index
                     }
                 )
@@ -54,11 +67,8 @@ fun TVShowScreen(tvShowViewModel: TVShowViewModel, onVideoPressed: () -> Unit = 
             ListView(
                 modifier = Modifier.fillMaxWidth(),
                 buttonTitles = currentEpisodesFromSeason.map { it.name },
-                onButtonPressedAt = { index ->
-                    tvShowViewModel.selectEpisodeOnIndexFromSeasonAt(
-                        index = currentSeasonIndex,
-                        episodeIndex = index
-                    )
+                onButtonPressedAt = { episodeIndex ->
+                    selectEpisodeOnIndexFromSeasonAt(currentSeasonIndex, episodeIndex)
                     onVideoPressed()
                 }
             )

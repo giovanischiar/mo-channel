@@ -34,6 +34,8 @@ import io.schiar.mochannel.view.screen.SettingsScreen
 import io.schiar.mochannel.view.screen.TVShowScreen
 import io.schiar.mochannel.view.screen.TVShowsScreen
 import io.schiar.mochannel.view.screen.VideoScreen
+import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
+import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
 import io.schiar.mochannel.view.uistate.TVShowsUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
@@ -95,8 +97,20 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable(route = "TVShow") {
+                    val currentTVShowUiState by tvShowViewModel
+                        .currentTVShowUiStateFlow
+                        .collectAsState(initial = CurrentTVShowUiState.Loading)
+
+                    val currentEpisodesFromSeasonUiState by tvShowViewModel
+                        .currentEpisodesFromSeasonUiStateFlow
+                        .collectAsState(initial = CurrentEpisodesFromSeasonUiState.Loading)
+
                     TVShowScreen(
-                        tvShowViewModel = tvShowViewModel,
+                        currentTVShowUiState = currentTVShowUiState,
+                        currentEpisodesFromSeasonUiState = currentEpisodesFromSeasonUiState,
+                        selectEpisodeOnIndexFromSeasonAt
+                            = tvShowViewModel::selectEpisodeOnIndexFromSeasonAt,
+                        selectEpisodesFromSeasonAt = tvShowViewModel::selectEpisodesFromSeasonAt,
                         onVideoPressed = { navController.navigate(route = "Video") }
                     )
                 }
