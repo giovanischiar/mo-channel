@@ -37,6 +37,7 @@ import io.schiar.mochannel.view.screen.VideoScreen
 import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
 import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
 import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
+import io.schiar.mochannel.view.uistate.ServerURLUiState
 import io.schiar.mochannel.view.uistate.TVShowsUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
@@ -67,10 +68,15 @@ class MainActivity : ComponentActivity() {
     ) {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val serverURL by settingsViewModel.serverURL.collectAsState(initial = ServerURLViewData())
-        LaunchedEffect(serverURL) {
-            val (fullURL) = settingsViewModel.serverURL.drop(count = 1).first()
-            val isServerURLValid = Patterns.WEB_URL.matcher(fullURL).matches()
+        val serverURLUiState by settingsViewModel.serverURLUiStateFlow.collectAsState(
+            initial = ServerURLUiState.ServerURLLoaded(ServerURLViewData())
+        )
+
+        LaunchedEffect(serverURLUiState) {
+            val serverURLUiState = settingsViewModel.serverURLUiStateFlow.drop(count = 1).first()
+            val isServerURLValid = Patterns.WEB_URL.matcher(
+                serverURLUiState.serverURL.fullURL
+            ).matches()
             if (!isServerURLValid && navBackStackEntry?.destination?.route != "Settings") {
                 navController.navigate("Settings")
             }
@@ -83,7 +89,16 @@ class MainActivity : ComponentActivity() {
                 startDestination = "TVShows"
             ) {
                 composable(route = "Settings") {
-                    SettingsScreen(settingsViewModel = settingsViewModel)
+                    val serverURLsUiState by settingsViewModel.serverURLUiStateFlow.collectAsState(
+                        initial = ServerURLUiState.Loading
+                    )
+
+                    SettingsScreen(
+                        serverURLUiState = serverURLsUiState,
+                        updatePrefixTo = settingsViewModel::updatePrefixTo,
+                        updateURLTo = settingsViewModel::updateURLTo,
+                        updatePortTo = settingsViewModel::updatePortTo
+                    )
                 }
                 composable(route = "TVShows") {
                     val tvShowsUiState by tvShowsViewModel

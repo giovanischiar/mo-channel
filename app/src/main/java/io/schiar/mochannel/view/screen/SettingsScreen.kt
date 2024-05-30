@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,12 +16,20 @@ import io.schiar.mochannel.view.components.SettingsListView
 import io.schiar.mochannel.view.components.SettingsRadioListView
 import io.schiar.mochannel.view.components.TextFieldView
 import io.schiar.mochannel.view.components.TitledView
+import io.schiar.mochannel.view.uistate.ServerURLUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
-import io.schiar.mochannel.viewmodel.SettingsViewModel
 
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel) {
-    val serverURL by settingsViewModel.serverURL.collectAsState(initial = ServerURLViewData())
+fun SettingsScreen(
+    serverURLUiState: ServerURLUiState,
+    updatePrefixTo: (prefix: String) -> Unit,
+    updateURLTo: (url: String) -> Unit,
+    updatePortTo: (port: String) -> Unit
+) {
+    val serverURL = when (serverURLUiState) {
+        is ServerURLUiState.Loading -> ServerURLViewData()
+        is ServerURLUiState.ServerURLLoaded -> serverURLUiState.serverURL
+    }
     val (fullURL, prefix, url, port) = serverURL
 
     var isServerURLFocused by remember { mutableStateOf(value = false) }
@@ -70,7 +77,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                             SettingsRadioListView(
                                 values = prefixes,
                                 currentSelectedValue = prefix,
-                                onListItemValuePressed = settingsViewModel::updatePrefixTo,
+                                onListItemValuePressed = updatePrefixTo,
                                 onListItemFocusChanged = { _, focus ->
                                     if (focus) {
                                         isServerURLMenuEditFocused = true
@@ -92,7 +99,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                             TextFieldView(
                                 label = "URL",
                                 text = url,
-                                onTextChange = settingsViewModel::updateURLTo,
+                                onTextChange = updateURLTo,
                                 keyboardType = keyboardType,
                             )
 
@@ -110,7 +117,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                                 label = "Port",
                                 text = port,
                                 keyboardType = KeyboardType.Number,
-                                onTextChange = settingsViewModel::updatePortTo
+                                onTextChange = updatePortTo
                             )
                         }
                     }
