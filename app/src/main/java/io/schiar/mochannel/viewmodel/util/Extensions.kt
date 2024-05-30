@@ -15,7 +15,11 @@ fun TVShow.toViewData(): TVShowViewData {
     return TVShowViewData(name = name, seasonTitles = seasonTitles)
 }
 
-fun List<TVShow>.toViewDataList(): List<TVShowViewData> {
+fun List<TVShow>.toTVShowsViewDataList(): List<TVShowViewData> {
+    return map { it.toViewData() }
+}
+
+fun List<Episode>.toEpisodeViewDataList(): List<EpisodeViewData> {
     return map { it.toViewData() }
 }
 

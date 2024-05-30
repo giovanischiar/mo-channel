@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
 import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
+import io.schiar.mochannel.viewmodel.util.toEpisodeViewDataList
 import io.schiar.mochannel.viewmodel.util.toViewData
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -17,7 +18,11 @@ class TVShowViewModel @Inject constructor(
         .map { CurrentTVShowUiState.CurrentTVShowLoaded(it.toViewData()) }
 
     val currentEpisodesFromSeasonUiStateFlow = tvShowRepository.currentEpisodesFromSeason
-        .map { CurrentEpisodesFromSeasonUiState.CurrentEpisodesFromSeasonLoaded(it) }
+        .map { episodes ->
+            CurrentEpisodesFromSeasonUiState.CurrentEpisodesFromSeasonLoaded(
+                episodes.toEpisodeViewDataList()
+            )
+        }
 
     fun selectEpisodesFromSeasonAt(index: Int) {
         tvShowRepository.selectEpisodesFromSeasonAt(index = index)
