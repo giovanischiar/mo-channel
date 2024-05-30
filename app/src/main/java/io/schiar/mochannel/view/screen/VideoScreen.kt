@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,18 +32,23 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.google.common.collect.ImmutableList
-import io.schiar.mochannel.viewmodel.VideoViewModel
+import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class) @Composable
-fun VideoScreen(videoViewModel: VideoViewModel) {
+fun VideoScreen(currentTVShowEpisodeURLsUiState: CurrentTVShowEpisodeURLsUiState) {
     val context = LocalContext.current
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val coroutineScope = rememberCoroutineScope()
     val exoPlayer = remember { ExoPlayer.Builder(context).build().apply { prepare() } }
 
-    val urls by videoViewModel.urls.collectAsState(initial = emptyList())
+    val urls = when (currentTVShowEpisodeURLsUiState) {
+        is CurrentTVShowEpisodeURLsUiState.Loading -> emptyList()
+        is CurrentTVShowEpisodeURLsUiState.CurrentEpisodesFromSeasonLoaded -> {
+            currentTVShowEpisodeURLsUiState.urls
+        }
+    }
     var backHandlerEnabled by remember { mutableStateOf(value = true) }
 
     LaunchedEffect(urls) {
