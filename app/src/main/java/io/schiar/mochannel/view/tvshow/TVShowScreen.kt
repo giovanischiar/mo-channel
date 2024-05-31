@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.screen
+package io.schiar.mochannel.view.tvshow
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,8 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.schiar.mochannel.view.components.ListView
-import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
-import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
+import io.schiar.mochannel.view.tvshow.uistate.CurrentEpisodesFromSeasonUiState
+import io.schiar.mochannel.view.tvshow.uistate.CurrentTVShowUiState
 
 @Composable
 fun TVShowScreen(

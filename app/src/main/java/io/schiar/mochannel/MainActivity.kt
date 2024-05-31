@@ -32,9 +32,7 @@ import io.schiar.mochannel.model.repository.TVShowsRepository
 import io.schiar.mochannel.model.repository.VideoRepository
 import io.schiar.mochannel.view.screen.SettingsScreen
 import io.schiar.mochannel.view.screen.VideoScreen
-import io.schiar.mochannel.view.tvshow.TVShowScreen
-import io.schiar.mochannel.view.tvshow.uistate.CurrentEpisodesFromSeasonUiState
-import io.schiar.mochannel.view.tvshow.uistate.CurrentTVShowUiState
+import io.schiar.mochannel.view.tvshow.tvShowScreen
 import io.schiar.mochannel.view.tvshows.tvShowsScreen
 import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
 import io.schiar.mochannel.view.uistate.ServerURLUiState
@@ -49,8 +47,6 @@ import kotlinx.coroutines.flow.first
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
-    private val tvShowsViewModel: TVShowsViewModel by viewModels()
-    private val tvShowViewModel: TVShowViewModel by viewModels()
     private val videoViewModel: VideoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +58,7 @@ class MainActivity : ComponentActivity() {
     private fun Navigation(
         tvShowsViewModel: TVShowsViewModel? = null,
         settingsViewModel: SettingsViewModel = this.settingsViewModel,
-        tvShowViewModel: TVShowViewModel = this.tvShowViewModel,
+        tvShowViewModel: TVShowViewModel? = null,
         videoViewModel: VideoViewModel = this.videoViewModel,
     ) {
         val navController = rememberNavController()
@@ -106,24 +102,11 @@ class MainActivity : ComponentActivity() {
                     onNavigateToTVShow = { navController.navigate(route = "TVShow") }
                 )
 
-                composable(route = "TVShow") {
-                    val currentTVShowUiState by tvShowViewModel
-                        .currentTVShowUiStateFlow
-                        .collectAsState(initial = CurrentTVShowUiState.Loading)
+                tvShowScreen(
+                    tvShowViewModel = tvShowViewModel,
+                    onNavigateToVideo = { navController.navigate(route = "Video") }
+                )
 
-                    val currentEpisodesFromSeasonUiState by tvShowViewModel
-                        .currentEpisodesFromSeasonUiStateFlow
-                        .collectAsState(initial = CurrentEpisodesFromSeasonUiState.Loading)
-
-                    TVShowScreen(
-                        currentTVShowUiState = currentTVShowUiState,
-                        currentEpisodesFromSeasonUiState = currentEpisodesFromSeasonUiState,
-                        selectEpisodeOnIndexFromSeasonAt
-                            = tvShowViewModel::selectEpisodeOnIndexFromSeasonAt,
-                        selectEpisodesFromSeasonAt = tvShowViewModel::selectEpisodesFromSeasonAt,
-                        onVideoPressed = { navController.navigate(route = "Video") }
-                    )
-                }
                 composable(route = "Video") {
                     val currentTVShowEpisodeURLsUiState by videoViewModel
                         .urlsUiStateFlow
