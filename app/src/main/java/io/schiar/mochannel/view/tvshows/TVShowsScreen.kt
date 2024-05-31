@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.screen
+package io.schiar.mochannel.view.tvshows
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,6 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import io.schiar.mochannel.R
 import io.schiar.mochannel.view.components.ListView
-import io.schiar.mochannel.view.uistate.TVShowsUiState
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable

@@ -31,14 +31,13 @@ import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.model.repository.TVShowsRepository
 import io.schiar.mochannel.model.repository.VideoRepository
 import io.schiar.mochannel.view.screen.SettingsScreen
-import io.schiar.mochannel.view.screen.TVShowScreen
-import io.schiar.mochannel.view.screen.TVShowsScreen
 import io.schiar.mochannel.view.screen.VideoScreen
-import io.schiar.mochannel.view.uistate.CurrentEpisodesFromSeasonUiState
+import io.schiar.mochannel.view.tvshow.TVShowScreen
+import io.schiar.mochannel.view.tvshow.uistate.CurrentEpisodesFromSeasonUiState
+import io.schiar.mochannel.view.tvshow.uistate.CurrentTVShowUiState
+import io.schiar.mochannel.view.tvshows.tvShowsScreen
 import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
-import io.schiar.mochannel.view.uistate.CurrentTVShowUiState
 import io.schiar.mochannel.view.uistate.ServerURLUiState
-import io.schiar.mochannel.view.uistate.TVShowsUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
@@ -61,8 +60,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun Navigation(
+        tvShowsViewModel: TVShowsViewModel? = null,
         settingsViewModel: SettingsViewModel = this.settingsViewModel,
-        tvShowsViewModel: TVShowsViewModel = this.tvShowsViewModel,
         tvShowViewModel: TVShowViewModel = this.tvShowViewModel,
         videoViewModel: VideoViewModel = this.videoViewModel,
     ) {
@@ -100,18 +99,13 @@ class MainActivity : ComponentActivity() {
                         updatePortTo = settingsViewModel::updatePortTo
                     )
                 }
-                composable(route = "TVShows") {
-                    val tvShowsUiState by tvShowsViewModel
-                        .tvShowsUiStateFlow
-                        .collectAsState(initial = TVShowsUiState.Loading)
+                
+                tvShowsScreen(
+                    tvShowsViewModel = tvShowsViewModel,
+                    onNavigateToSettings = { navController.navigate(route = "Settings") },
+                    onNavigateToTVShow = { navController.navigate(route = "TVShow") }
+                )
 
-                    TVShowsScreen(
-                        tvShowsUiState = tvShowsUiState,
-                        selectTVShowAt = tvShowsViewModel::selectTVShowAt,
-                        onSettingsPressed = { navController.navigate(route = "Settings") },
-                        onTVShowPressed = { navController.navigate(route = "TVShow") }
-                    )
-                }
                 composable(route = "TVShow") {
                     val currentTVShowUiState by tvShowViewModel
                         .currentTVShowUiStateFlow

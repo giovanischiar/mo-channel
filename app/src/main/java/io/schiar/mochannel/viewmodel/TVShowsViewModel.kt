@@ -3,7 +3,7 @@ package io.schiar.mochannel.viewmodel
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.repository.TVShowsRepository
-import io.schiar.mochannel.view.uistate.TVShowsUiState
+import io.schiar.mochannel.view.tvshows.TVShowsUiState
 import io.schiar.mochannel.viewmodel.util.toTVShowsViewDataList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
