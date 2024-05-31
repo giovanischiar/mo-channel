@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import io.schiar.mochannel.R
 import io.schiar.mochannel.view.settings.settingsScreen
+import io.schiar.mochannel.view.shared.util.Route
 import io.schiar.mochannel.view.tvshow.tvShowScreen
 import io.schiar.mochannel.view.tvshows.tvShowsScreen
 import io.schiar.mochannel.view.video.videoScreen
@@ -30,19 +31,19 @@ fun Navigation(
         NavHost(
             modifier = Modifier.background(color = colorResource(R.color.backgroundColor)),
             navController = navController,
-            startDestination = "TVShows"
+            startDestination = Route.TV_SHOWS.id
         ) {
             settingsScreen(settingsViewModel = settingsViewModel)
 
             tvShowsScreen(
                 tvShowsViewModel = tvShowsViewModel,
-                onNavigateToSettings = { navController.navigate(route = "Settings") },
-                onNavigateToTVShow = { navController.navigate(route = "TVShow") }
+                onNavigateToSettings = { navController.navigate(route = Route.SETTINGS.id) },
+                onNavigateToTVShow = { navController.navigate(route = Route.TV_SHOW.id) }
             )
 
             tvShowScreen(
                 tvShowViewModel = tvShowViewModel,
-                onNavigateToVideo = { navController.navigate(route = "Video") }
+                onNavigateToVideo = { navController.navigate(route = Route.VIDEO.id) }
             )
 
             videoScreen(videoViewModel = videoViewModel)

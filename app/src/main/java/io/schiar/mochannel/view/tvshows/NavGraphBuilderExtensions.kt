@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.schiar.mochannel.view.shared.util.Route
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
 
 fun NavGraphBuilder.tvShowsScreen(
@@ -12,7 +13,7 @@ fun NavGraphBuilder.tvShowsScreen(
     onNavigateToTVShow: () -> Unit,
     tvShowsViewModel: TVShowsViewModel? = null
 ) {
-    composable(route = "TVShows") {
+    composable(route = Route.TV_SHOWS.id) {
         val viewModel = tvShowsViewModel ?: hiltViewModel()
         val tvShowsUiState by viewModel
             .tvShowsUiStateFlow
