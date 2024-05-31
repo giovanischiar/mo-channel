@@ -12,11 +12,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import io.schiar.mochannel.view.components.SettingsListView
-import io.schiar.mochannel.view.components.SettingsRadioListView
-import io.schiar.mochannel.view.components.TextFieldView
-import io.schiar.mochannel.view.components.TitledView
-import io.schiar.mochannel.view.viewdata.ServerURLViewData
+import io.schiar.mochannel.view.settings.components.SettingsListView
+import io.schiar.mochannel.view.settings.components.SettingsRadioListView
+import io.schiar.mochannel.view.settings.components.TextFieldView
+import io.schiar.mochannel.view.settings.components.TitledView
+import io.schiar.mochannel.view.shared.viewdata.ServerURLViewData
 
 @Composable
 fun SettingsScreen(

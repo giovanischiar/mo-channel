@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.viewdata
+package io.schiar.mochannel.view.shared.viewdata
 
 data class ServerURLViewData(
     val fullURL: String = "",

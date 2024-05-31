@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.components
+package io.schiar.mochannel.view.settings.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions

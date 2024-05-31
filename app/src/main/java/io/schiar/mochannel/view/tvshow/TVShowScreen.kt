@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.schiar.mochannel.view.components.ListView
+import io.schiar.mochannel.view.shared.components.ListView
 import io.schiar.mochannel.view.tvshow.uistate.CurrentEpisodesFromSeasonUiState
 import io.schiar.mochannel.view.tvshow.uistate.CurrentTVShowUiState
 

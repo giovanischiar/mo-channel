@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.components
+package io.schiar.mochannel.view.settings.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

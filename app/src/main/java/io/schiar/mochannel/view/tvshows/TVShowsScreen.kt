@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import io.schiar.mochannel.R
-import io.schiar.mochannel.view.components.ListView
+import io.schiar.mochannel.view.shared.components.ListView
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.components
+package io.schiar.mochannel.view.shared.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

@@ -1,7 +1,7 @@
 package io.schiar.mochannel.view.settings
 
 import androidx.compose.runtime.Immutable
-import io.schiar.mochannel.view.viewdata.ServerURLViewData
+import io.schiar.mochannel.view.shared.viewdata.ServerURLViewData
 
 @Immutable
 sealed interface ServerURLUiState {
