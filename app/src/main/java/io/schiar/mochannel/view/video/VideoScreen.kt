@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.screen
+package io.schiar.mochannel.view.video
 
 import android.net.Uri
 import android.view.KeyEvent
@@ -32,7 +32,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.google.common.collect.ImmutableList
-import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 

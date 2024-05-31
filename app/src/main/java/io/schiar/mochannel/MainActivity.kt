@@ -31,11 +31,10 @@ import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.model.repository.TVShowsRepository
 import io.schiar.mochannel.model.repository.VideoRepository
 import io.schiar.mochannel.view.screen.SettingsScreen
-import io.schiar.mochannel.view.screen.VideoScreen
 import io.schiar.mochannel.view.tvshow.tvShowScreen
 import io.schiar.mochannel.view.tvshows.tvShowsScreen
-import io.schiar.mochannel.view.uistate.CurrentTVShowEpisodeURLsUiState
 import io.schiar.mochannel.view.uistate.ServerURLUiState
+import io.schiar.mochannel.view.video.videoScreen
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
@@ -47,7 +46,6 @@ import kotlinx.coroutines.flow.first
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
-    private val videoViewModel: VideoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +57,7 @@ class MainActivity : ComponentActivity() {
         tvShowsViewModel: TVShowsViewModel? = null,
         settingsViewModel: SettingsViewModel = this.settingsViewModel,
         tvShowViewModel: TVShowViewModel? = null,
-        videoViewModel: VideoViewModel = this.videoViewModel,
+        videoViewModel: VideoViewModel? = null
     ) {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -107,12 +105,7 @@ class MainActivity : ComponentActivity() {
                     onNavigateToVideo = { navController.navigate(route = "Video") }
                 )
 
-                composable(route = "Video") {
-                    val currentTVShowEpisodeURLsUiState by videoViewModel
-                        .urlsUiStateFlow
-                        .collectAsState(initial = CurrentTVShowEpisodeURLsUiState.Loading)
-                    VideoScreen(currentTVShowEpisodeURLsUiState = currentTVShowEpisodeURLsUiState)
-                }
+                videoScreen(videoViewModel = videoViewModel)
             }
         }
     }

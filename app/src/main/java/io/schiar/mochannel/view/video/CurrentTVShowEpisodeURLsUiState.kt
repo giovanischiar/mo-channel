@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.uistate
+package io.schiar.mochannel.view.video
 
 import androidx.compose.runtime.Immutable
 
