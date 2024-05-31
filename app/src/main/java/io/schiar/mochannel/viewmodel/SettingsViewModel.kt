@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.schiar.mochannel.model.repository.SettingsRepository
-import io.schiar.mochannel.view.uistate.ServerURLUiState
+import io.schiar.mochannel.view.settings.ServerURLUiState
 import io.schiar.mochannel.viewmodel.util.toViewData
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package io.schiar.mochannel.view.screen
+package io.schiar.mochannel.view.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,6 @@ import io.schiar.mochannel.view.components.SettingsListView
 import io.schiar.mochannel.view.components.SettingsRadioListView
 import io.schiar.mochannel.view.components.TextFieldView
 import io.schiar.mochannel.view.components.TitledView
-import io.schiar.mochannel.view.uistate.ServerURLUiState
 import io.schiar.mochannel.view.viewdata.ServerURLViewData
 
 @Composable

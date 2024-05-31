@@ -1,22 +1,15 @@
 package io.schiar.mochannel
 
 import android.os.Bundle
-import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.schiar.mochannel.library.local.PreviewLocalData
@@ -30,23 +23,17 @@ import io.schiar.mochannel.model.repository.SettingsRepository
 import io.schiar.mochannel.model.repository.TVShowRepository
 import io.schiar.mochannel.model.repository.TVShowsRepository
 import io.schiar.mochannel.model.repository.VideoRepository
-import io.schiar.mochannel.view.screen.SettingsScreen
+import io.schiar.mochannel.view.settings.settingsScreen
 import io.schiar.mochannel.view.tvshow.tvShowScreen
 import io.schiar.mochannel.view.tvshows.tvShowsScreen
-import io.schiar.mochannel.view.uistate.ServerURLUiState
 import io.schiar.mochannel.view.video.videoScreen
-import io.schiar.mochannel.view.viewdata.ServerURLViewData
 import io.schiar.mochannel.viewmodel.SettingsViewModel
 import io.schiar.mochannel.viewmodel.TVShowViewModel
 import io.schiar.mochannel.viewmodel.TVShowsViewModel
 import io.schiar.mochannel.viewmodel.VideoViewModel
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val settingsViewModel: SettingsViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { Navigation() }
@@ -55,25 +42,11 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun Navigation(
         tvShowsViewModel: TVShowsViewModel? = null,
-        settingsViewModel: SettingsViewModel = this.settingsViewModel,
+        settingsViewModel: SettingsViewModel? = null,
         tvShowViewModel: TVShowViewModel? = null,
         videoViewModel: VideoViewModel? = null
     ) {
         val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val serverURLUiState by settingsViewModel.serverURLUiStateFlow.collectAsState(
-            initial = ServerURLUiState.ServerURLLoaded(ServerURLViewData())
-        )
-
-        LaunchedEffect(serverURLUiState) {
-            val serverURLUiState = settingsViewModel.serverURLUiStateFlow.drop(count = 1).first()
-            val isServerURLValid = Patterns.WEB_URL.matcher(
-                serverURLUiState.serverURL.fullURL
-            ).matches()
-            if (!isServerURLValid && navBackStackEntry?.destination?.route != "Settings") {
-                navController.navigate("Settings")
-            }
-        }
 
         Box {
             NavHost(
@@ -81,18 +54,7 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = "TVShows"
             ) {
-                composable(route = "Settings") {
-                    val serverURLsUiState by settingsViewModel.serverURLUiStateFlow.collectAsState(
-                        initial = ServerURLUiState.Loading
-                    )
-
-                    SettingsScreen(
-                        serverURLUiState = serverURLsUiState,
-                        updatePrefixTo = settingsViewModel::updatePrefixTo,
-                        updateURLTo = settingsViewModel::updateURLTo,
-                        updatePortTo = settingsViewModel::updatePortTo
-                    )
-                }
+                settingsScreen(settingsViewModel = settingsViewModel)
                 
                 tvShowsScreen(
                     tvShowsViewModel = tvShowsViewModel,
