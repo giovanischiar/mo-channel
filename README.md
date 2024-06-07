@@ -19,6 +19,7 @@
   - [Package `viewmodel` with `view.viewdata`](#package-viewmodel-with-viewviewdata)
   - [Package `viewmodel` with `model.repository`](#package-viewmodel-with-modelrepository)
   - [Package `model`](#package-model)
+  - [Package `model.repository` and `model`](#package-modelrepository-and-model)
   - [Package `model.repository` with `model.datasource` and `library`](#package-modelrepository-with-modeldatasource-and-library)
 - [Future Tasks](#future-tasks)
 
@@ -94,6 +95,14 @@
     <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/model-diagram.dark.svg">
     <img alt="Package model" src="./readme-res/diagrams/model-diagram.light.svg">
   </picture>
+
+### Package `model.repository` and `model`
+  These diagrams represent all the associations among the classes in `model.repository` and `model`.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./readme-res/diagrams/dark/repository-model-diagram.dark.svg">
+  <img alt="Repository Model Diagram" src="./readme-res/diagrams/repository-model-diagram.light.svg">
+</picture>
 
 ### Package `model.repository` with `model.datasource` and `library`
   Repository classes utilize the Data Source classes to perform the creation, retrieval, update, and deletion of the model objects. The Data Source classes use the database to persist these alterations and the requester to fetch the application data. In this case, the data can come from the database in the case of ServerURL or the API server in the case of TV shows. It can also be sourced from local sources, enabling testing of the application. This diagram represents all the associations among the classes in `model.repository`, `model.datasource`, and `library`. It also demonstrates the communications between each Repository through interfaces located at `model.repository.listener` package.
