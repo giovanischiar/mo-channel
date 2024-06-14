@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="readme-res/banner.png" width="432" height="243"><br>
+  <img src="readme-res/ic_launcher.svg" width="100" height="100"><br>
   Mo Channel
 </h1>
 
