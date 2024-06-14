@@ -125,3 +125,14 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
+
+task("generateIcons", type = Exec::class) {
+    dependsOn("mergeDebugResources")
+    inputs.file("src/main/res/values/iconpalette.xml")
+    inputs.dir("../scripts/IconCreator/Icon")
+    outputs.file("src/main/res/drawable/ic_launcher_background.xml")
+    outputs.file("src/main/res/drawable-v24/ic_launcher_foreground.xml")
+    project.exec {
+        commandLine = listOf("bash", "../scripts/IconCreator/Library/icon-creator.sh", "android", "../..", "../Icon")
+    }
+}
